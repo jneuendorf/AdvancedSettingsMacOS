@@ -20,4 +20,8 @@ public class BooleanFinderSetting extends BooleanSetting {
         );
     }
 
+    public BooleanFinderSetting(String name, RunnableCommand commandTrue, RunnableCommand commandFalse, RunnableCommand commandIsActive) {
+        this(name, commandTrue, commandFalse, commandIsActive, false);
+    }
+
 }

@@ -14,7 +14,6 @@ import java.io.IOException;
 public class Main {
     public static final String APP_NAME = "AdvancedSettingsMacOS";
 
-
     /**
      * Run with -Xdock:name=AdvancesSettingsMacOS
      */
@@ -25,7 +24,8 @@ public class Main {
         ProcessBuilder pb = new ProcessBuilder("defaults", "write", "com.apple.finder", "CreateDesktop", "-bool", "true");
         try {
             Process pr = pb.start();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         new Frame(APP_NAME, getSettings());
@@ -48,11 +48,16 @@ public class Main {
     private static Setting[] getSettings() {
         return new Setting[] {
                 new BooleanFinderSetting(
-                        "hide desktop icons",
-                        new Command("defaults", "write", "com.apple.finder", "CreateDesktop", "-bool", "false"),
+                        "show desktop icons",
                         new Command("defaults", "write", "com.apple.finder", "CreateDesktop", "-bool", "true"),
-                        new Command("defaults", "read", "com.apple.finder", "CreateDesktop"),
-                        true
+                        new Command("defaults", "write", "com.apple.finder", "CreateDesktop", "-bool", "false"),
+                        new Command("defaults", "read", "com.apple.finder", "CreateDesktop")
+                ),
+                new BooleanFinderSetting(
+                        "Finder has Quit menu item",
+                        new Command("defaults", "write", "com.apple.finder", "QuitMenuItem", "-bool", "true"),
+                        new Command("defaults", "write", "com.apple.finder", "QuitMenuItem", "-bool", "false"),
+                        new Command("defaults", "read", "com.apple.finder", "QuitMenuItem")
                 )
         };
     }
