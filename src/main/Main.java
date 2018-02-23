@@ -1,6 +1,7 @@
 package main;
 
 import settings.BooleanFinderSetting;
+import settings.BooleanDockSetting;
 import settings.Setting;
 import settings.commands.Command;
 import ui.Frame;
@@ -58,6 +59,12 @@ public class Main {
                         new Command("defaults", "write", "com.apple.finder", "QuitMenuItem", "-bool", "true"),
                         new Command("defaults", "write", "com.apple.finder", "QuitMenuItem", "-bool", "false"),
                         new Command("defaults", "read", "com.apple.finder", "QuitMenuItem")
+                ),
+                new BooleanDockSetting(
+                        "highlight hover effect for grid view stacks",
+                        new Command("defaults", "write", "com.apple.dock", "mouse-over-hilite-stack", "-bool", "true"),
+                        new Command("defaults", "write", "com.apple.dock", "mouse-over-hilite-stack", "-bool", "false"),
+                        new Command("defaults", "read", "com.apple.dock", "mouse-over-hilite-stack")
                 )
         };
     }
