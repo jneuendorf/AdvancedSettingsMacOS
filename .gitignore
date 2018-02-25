@@ -1,5 +1,8 @@
+__pycache__
 .DS_Store
 .idea
 *.iml
+db.sqlite3
 out
 target/**
+venv
