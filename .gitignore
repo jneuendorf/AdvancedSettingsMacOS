@@ -3,6 +3,7 @@ __pycache__
 .idea
 *.iml
 db.sqlite3
+node_modules
 out
 target/**
 venv

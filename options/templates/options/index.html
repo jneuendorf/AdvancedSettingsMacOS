@@ -2,10 +2,68 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+    <link rel="stylesheet" href="{% static 'options/bulma-switch.min.css' %}">
+    <link rel="stylesheet" href="{% static 'options/bulma-divider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'options/bulma-pageloader.min.css' %}">
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"
+    ></script>
+    <title>Advanced Settings for macOS</title>
 </head>
 <body>
+    <section class="section">
+        <div class="container is-widescreen">
 
+            <div class="columns">
+                <div class="column is-one-third nav-container">
+                    <aside class="menu">
+                        <p class="menu-label">
+                            Sections
+                        </p>
+                        <ul class="menu-list">
+                            {% for name, data in command_config.items %}
+                                <li><a href="#{{ name|slugify }}">{{ name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </aside>
+                </div>
+                <div class="column" style="overflow: scroll;">
+                    <section class="section">
+                        <span style="line-height: 2.3rem;">Read and load values from the system where possible (this may take a while).</span>
+                        <span style="display: inline-block; width: 20px;"></span>
+                        <button class="button is-outlined is-link" type="button is-small">Go</button>
+                    </section>
+                    <div class="is-divider" data-content="SETTINGS"></div>
+                    {% for name, data in command_config.items %}
+                        <section class="section">
+                            {# <h1><a name="{{ data.id }}">{{ name }}</h1> #}
+                                <div class="panel">
+                                    <p class="panel-heading">
+                                        <a name="{{ name|slugify }}">{{ name }}</a>
+                                    </p>
+                                    {% for command_id, command_data in data.items %}
+                                        {% if command_id != 'id' %}
+                                            <div class="panel-block columns" style="margin: 0; padding-left: 0.2rem; padding-right: 0.2rem;">
+                                                <div class="column">
+                                                    {{ command_data.label }}
+                                                </div>
+                                                <div class="column {% if command_data.widgets_width %}{{ command_data.widgets_width }}{% else %}is-one-quarter{% endif %}" style="text-align: right;">
+                                                    {{ command_data.widgets|safe }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                        </section>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
     <script src="{% static 'options/index.js' %}" type="module"></script>
 </body>
 </html>
