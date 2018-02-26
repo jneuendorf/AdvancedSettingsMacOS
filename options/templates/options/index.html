@@ -33,9 +33,19 @@
                 </div>
                 <div class="column" style="overflow: scroll;">
                     <section class="section">
-                        <span style="line-height: 2.3rem;">Read and load values from the system where possible (this may take a while).</span>
-                        <span style="display: inline-block; width: 20px;"></span>
-                        <button class="button is-outlined is-link" type="button is-small">Go</button>
+                        <div class="columns">
+                            <div class="column">
+                                <span style="line-height: 2.3rem;">
+                                    <strong>Recommended:</strong>
+                                    Read and load values from the system where possible (this may take a while).
+                                </span>
+                            </div>
+                            <div class="column is-narrow">
+                                <button class="button is-outlined is-link" type="button is-small">Go</button>
+                            </div>
+                        </div>
+                        <!--<span style="line-height: 2.3rem;">Read and load values from the system where possible (this may take a while).</span>
+                        <span style="display: inline-block; width: 20px;"></span>-->
                     </section>
                     <div class="is-divider" data-content="SETTINGS"></div>
                     {% for name, data in command_config.items %}
@@ -49,7 +59,7 @@
                                         {% if command_id != 'id' %}
                                             <div class="panel-block columns" style="margin: 0; padding-left: 0.2rem; padding-right: 0.2rem;">
                                                 <div class="column">
-                                                    {{ command_data.label }}
+                                                    {{ command_data.label|safe }}
                                                 </div>
                                                 <div class="column {% if command_data.widgets_width %}{{ command_data.widgets_width }}{% else %}is-one-quarter{% endif %}" style="text-align: right;">
                                                     {{ command_data.widgets|safe }}

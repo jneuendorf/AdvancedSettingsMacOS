@@ -20,9 +20,7 @@ def identity(x):
     return x
 
 
-def parse_boolean_input(input):
-    if (type(input) != bool):
-        raise InputError()
+def stringify_boolean_input(input):
     return 'true' if input else 'false'
 
 def parse_numeric_input(input):
@@ -34,10 +32,17 @@ def create_input_parser(type):
     if type == 'number':
         return parse_numeric_input
     if type == 'boolean':
-        return parse_boolean_input
+        return identity
     if type == 'select':
         return identity
+    if type == 'none':
+        return identity
     raise ValueError(f'No parser for type "{type}".')
+
+def create_input_stringifier(type):
+    if type == 'boolean':
+        return stringify_boolean_input
+    return lambda x: str(x)
 
 
 default_attrs_by_type = {
@@ -59,7 +64,7 @@ def render_widgets(section_name, command_id, data):
         attrs['placeholder'] = data.get('default', '')
 
     text_based_types = ('text', 'number')
-    buttoned_widget_types = text_based_types + ('select',)
+    buttoned_widget_types = text_based_types + ('select', 'none',)
 
     input_widget = ''
     attrs_str = ' '.join(
@@ -90,10 +95,11 @@ def render_widgets(section_name, command_id, data):
     return result
 
 
+
 raw_command_config = {
     'System': {
         'standbydelay': {
-            'label': 'Set standby delay in hours (default is 1 hour)',
+            'label': 'Set standby delay in hours (default is 1 hour).',
             'command': 'pmset -a standbydelay {0}',
             'type': 'number',
             'stringify_input': lambda hours: str(int(hours * 3600)),
@@ -110,12 +116,12 @@ raw_command_config = {
     },
     'General UI/UX': {
         'reduceTransparency': {
-            'label': 'Disable transparency in the menu bar and elsewhere on Yosemite',
+            'label': 'Disable transparency in the menu bar and elsewhere on Yosemite.',
             'command': 'defaults write com.apple.universalaccess reduceTransparency -bool {0}',
             'type': 'boolean',
         },
         'AppleHighlightColor': {
-            'label': 'Set highlight color',
+            'label': 'Set highlight color to',
             'command': 'defaults write NSGlobalDomain AppleHighlightColor -string "{0}"',
             'type': 'text',
             'widgets_width': 'is-half',
@@ -125,7 +131,7 @@ raw_command_config = {
         },
         'NSTableViewDefaultSizeMode': {
             # TODO: what numbers are valid and mean what?
-            'label': 'Set sidebar icon size to...',
+            'label': 'Set sidebar icon size to',
             'command': 'defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int {0}',
             'type': 'number',
             'widget_attrs': {
@@ -133,7 +139,7 @@ raw_command_config = {
             },
         },
         'AppleShowScrollBars': {
-            'label': 'Show scrollbars',
+            'label': 'When to show scrollbars.',
             'command': 'defaults write NSGlobalDomain AppleShowScrollBars -string "{0}"',
             'type': 'select',
             'choices': (
@@ -143,11 +149,154 @@ raw_command_config = {
             ),
             'widgets_width': 'is-two-fifths',
         },
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
+        'NSUseAnimatedFocusRing': {
+            'label': 'Disable the over-the-top focus ring animation.',
+            'command': 'defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool {0}',
+            'type': 'boolean',
+        },
+        'NSScrollAnimationEnabled': {
+            'label': 'Disable smooth scrolling. Uncomment if you’re on an older Mac that messes up the animation.',
+            'command': 'defaults write NSGlobalDomain NSScrollAnimationEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'NSWindowResizeTime': {
+            'label': 'Increase window resize speed for Cocoa applications.',
+            'command': 'defaults write NSGlobalDomain NSWindowResizeTime -float {0}',
+            'type': 'number',
+            'widget_attrs': {
+                'placeholder': '0.001',
+                'step': '0.001',
+                'min': '0',
+            },
+        },
+        'NSNavPanelExpandedStateForSaveMode': {
+            'label': 'Expand save panel by default.',
+            'command': 'defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool {0} && defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool {0}',
+            'type': 'boolean',
+        },
+        'PMPrintingExpandedStateForPrint': {
+            'label': 'Expand print panel by default.',
+            'command': 'defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool {0} && defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool {0}',
+            'type': 'boolean',
+        },
+        'NSDocumentSaveNewDocumentsToCloud': {
+            'label': 'Save to disk (not to iCloud) by default.',
+            'command': 'defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool {0}',
+            'type': 'boolean',
+        },
+        'PrintingPrefsQuitWhenFinished': {
+            'label': 'Automatically quit printer app once the print jobs complete.',
+            'command': 'defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool {0}',
+            'type': 'boolean',
+        },
+        'LSQuarantine': {
+            'label': 'Disable the “Are you sure you want to open this application?” dialog.',
+            'command': 'defaults write com.apple.LaunchServices LSQuarantine -bool {0}',
+            'type': 'boolean',
+        },
+        'lsregisterRemoveDuplicates': {
+            'label': 'Remove duplicates in the “Open With” menu (also see `lscleanup` alias).',
+            'command': '/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user',
+            'type': 'none',
+        },
+        'NSTextShowsControlCharacters': {
+            'label': (
+                'Display ASCII control characters using caret notation in standard text views. '
+                'Try e.g.<br><code>cd /tmp; unidecode "\\x{0000}" > cc.txt; open -e cc.txt</code>'
+            ),
+            'command': 'defaults write NSGlobalDomain NSTextShowsControlCharacters -bool {0}',
+            'type': 'boolean',
+        },
+        'NSQuitAlwaysKeepsWindows': {
+            'label': 'Disable Resume system-wide.',
+            'command': 'defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool {0}',
+            'type': 'boolean',
+        },
+        'NSDisableAutomaticTermination': {
+            'label': 'Disable automatic termination of inactive apps.',
+            'command': 'defaults write NSGlobalDomain NSDisableAutomaticTermination -bool {0}',
+            'type': 'boolean',
+        },
+        # TODO: how to revert
+        'CrashReporterDialogTypeNone': {
+            'label': 'Disable the crash reporter.',
+            'command': 'defaults write com.apple.CrashReporter DialogType -string "none"',
+            'type': 'none',
+        },
+        'helpviewerDevMode': {
+            'label': 'Set Help Viewer windows to non-floating mode.',
+            'command': 'defaults write com.apple.helpviewer DevMode -bool {0}',
+            'type': 'boolean',
+        },
+        'UTF-8QuickLookBug': {
+            'label': 'Fix for the ancient UTF-8 bug in QuickLook (https:#mths.be/bbo). <strong class="has-text-danger">This is known to cause problems in various Adobe apps.</strong> See <a href="https:#github.com/mathiasbynens/dotfiles/issues/237">this issue</a>.',
+            'command': 'echo "0x08000100:0" > ~/.CFUserTextEncoding',
+            'type': 'none',
+        },
+        'AdminHostInfo': {
+            'label': 'Reveal IP address, hostname, OS version, etc. when clicking the clock in the login window.',
+            'command': 'defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName',
+            'type': 'none',
+            'sudo': True,
+        },
+        'setrestartfreeze': {
+            'label': 'Restart automatically if the computer freezes.',
+            'command': 'systemsetup -setrestartfreeze {0}',
+            'type': 'boolean',
+            'sudo': True,
+            'stringify_input': lambda x: 'on' if x else 'off',
+        },
+        'setcomputersleep': {
+            'label': 'Never go into computer sleep mode.',
+            'command': 'systemsetup -setcomputersleep {0} > /dev/null',
+            'type': 'boolean',
+            'sudo': True,
+            'stringify_input': lambda x: 'on' if x else 'off',
+        },
+        'DisableNotificationCenter': {
+            'label': 'Disable Notification Center and remove the menu bar icon.',
+            'command': 'launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null',
+            'type': 'none',
+        },
+        'NSAutomaticCapitalizationEnabled': {
+            'label': 'Disable automatic capitalization as it’s annoying when typing code.',
+            'command': 'defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'NSAutomaticDashSubstitutionEnabled': {
+            'label': 'Disable smart dashes as they’re annoying when typing code.',
+            'command': 'defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'NSAutomaticPeriodSubstitutionEnabled': {
+            'label': 'Disable automatic period substitution as it’s annoying when typing code.',
+            'command': 'defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'NSAutomaticQuoteSubstitutionEnabled': {
+            'label': 'Disable smart quotes as they’re annoying when typing code.',
+            'command': 'defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'NSAutomaticSpellingCorrectionEnabled': {
+            'label': 'Disable auto-correct.',
+            'command': 'defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool {0}',
+            'type': 'boolean',
+        },
+    },
+    'SSD-specific tweaks': {
+        'hibernatemode': {
+            'label': 'Disable hibernation (speeds up entering sleep mode).',
+            'command': 'sudo pmset -a hibernatemode 0',
+            'type': 'none',
+            'sudo': True,
+        },
+        'SleepImageFile': {
+            'label': 'Remove the sleep image file to save disk space.',
+            'command': 'rm /private/var/vm/sleepimage && touch /private/var/vm/sleepimage && chflags uchg /private/var/vm/sleepimage',
+            'type': 'none',
+            'sudo': True,
+        },
         # '': {
         #     'label': '',
         #     'command': '',
@@ -174,115 +323,6 @@ raw_command_config = {
 }
 
 
-
-
-# ########################################/
-# # General UI/UX                                                               #
-# ########################################/
-#
-# # Always show scrollbars
-# defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
-# # Possible values: `WhenScrolling`, `Automatic` and `Always`
-#
-# # Disable the over-the-top focus ring animation
-# defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool false
-#
-# # Disable smooth scrolling
-# # (Uncomment if you’re on an older Mac that messes up the animation)
-# #defaults write NSGlobalDomain NSScrollAnimationEnabled -bool false
-#
-# # Increase window resize speed for Cocoa applications
-# defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
-#
-# # Expand save panel by default
-# defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-# defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
-#
-# # Expand print panel by default
-# defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
-# defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
-#
-# # Save to disk (not to iCloud) by default
-# defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
-#
-# # Automatically quit printer app once the print jobs complete
-# defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
-#
-# # Disable the “Are you sure you want to open this application?” dialog
-# defaults write com.apple.LaunchServices LSQuarantine -bool false
-#
-# # Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
-# /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
-#
-# # Display ASCII control characters using caret notation in standard text views
-# # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
-# defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
-#
-# # Disable Resume system-wide
-# defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false
-#
-# # Disable automatic termination of inactive apps
-# defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
-#
-# # Disable the crash reporter
-# #defaults write com.apple.CrashReporter DialogType -string "none"
-#
-# # Set Help Viewer windows to non-floating mode
-# defaults write com.apple.helpviewer DevMode -bool true
-#
-# # Fix for the ancient UTF-8 bug in QuickLook (https:#mths.be/bbo)
-# # Commented out, as this is known to cause problems in various Adobe apps :(
-# # See https:#github.com/mathiasbynens/dotfiles/issues/237
-# #echo "0x08000100:0" > ~/.CFUserTextEncoding
-#
-# # Reveal IP address, hostname, OS version, etc. when clicking the clock
-# # in the login window
-# sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
-#
-# # Restart automatically if the computer freezes
-# sudo systemsetup -setrestartfreeze on
-#
-# # Never go into computer sleep mode
-# sudo systemsetup -setcomputersleep Off > /dev/null
-#
-# # Disable Notification Center and remove the menu bar icon
-# launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
-#
-# # Disable automatic capitalization as it’s annoying when typing code
-# defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
-#
-# # Disable smart dashes as they’re annoying when typing code
-# defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
-#
-# # Disable automatic period substitution as it’s annoying when typing code
-# defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
-#
-# # Disable smart quotes as they’re annoying when typing code
-# defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
-#
-# # Disable auto-correct
-# defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
-#
-# # Set a custom wallpaper image. `DefaultDesktop.jpg` is already a symlink, and
-# # all wallpapers are in `/Library/Desktop Pictures/`. The default is `Wave.jpg`.
-# #rm -rf ~/Library/Application Support/Dock/desktoppicture.db
-# #sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
-# #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
-#
-# ########################################/
-# # SSD-specific tweaks                                                         #
-# ########################################/
-#
-# # Disable hibernation (speeds up entering sleep mode)
-# sudo pmset -a hibernatemode 0
-#
-# # Remove the sleep image file to save disk space
-# sudo rm /private/var/vm/sleepimage
-# # Create a zero-byte file instead…
-# sudo touch /private/var/vm/sleepimage
-# # …and make sure it can’t be rewritten
-# sudo chflags uchg /private/var/vm/sleepimage
-#
 # ########################################/
 # # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 # ########################################/
@@ -1076,7 +1116,7 @@ command_config = {
         command_id: {
             'widgets': render_widgets(section_name, command_id, data),
             'parse_input': create_input_parser(data['type']),
-            'stringify_input': lambda x: str(x),
+            'stringify_input': create_input_stringifier(data['type']),
             **data
         }
         for command_id, data in commands.items()

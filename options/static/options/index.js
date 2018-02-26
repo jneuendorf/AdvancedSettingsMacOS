@@ -18,6 +18,10 @@ $(".send-command").click(event => {
     else if (value_source.hasClass('select')) {
         value = value_source.find(':selected').val()
     }
+    // type == 'none'
+    else if (value_source.length === 0) {
+        value = null
+    }
     else {
         value = value_source.val()
     }
