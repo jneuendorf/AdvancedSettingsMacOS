@@ -35,6 +35,8 @@ def create_input_parser(type):
         return parse_numeric_input
     if type == 'boolean':
         return parse_boolean_input
+    if type == 'select':
+        return identity
     raise ValueError(f'No parser for type "{type}".')
 
 
@@ -45,7 +47,6 @@ default_attrs_by_type = {
     'number': {
         'style': 'width: calc(100% - 60px);',
     },
-
 }
 
 def render_widgets(section_name, command_id, data):
@@ -72,18 +73,20 @@ def render_widgets(section_name, command_id, data):
     elif t == 'boolean':
         uid = uuid()
         input_widget = (
-            f'<div style="display: inline;">'
+            f'<div>'
                 f'<input id="switch_{uid}" type="checkbox" class="switch is-rounded is-outlined is-link is-large send-command" {metadata} data-value-source>'
                 f'<label for="switch_{uid}"></label>'
             '</div>'
         )
     elif t == 'select':
-        pass
+        choices = ''.join(f'<option value="{value}">{label}</option>' for value, label in data['choices'])
+        input_widget = f'<div class="select" {attrs_str} data-value-source><select>{choices}</select></div>'
 
     result = f'{input_widget} '
 
     if t in buttoned_widget_types:
         result += f'<button class="button is-link send-command" type="button" {metadata}>OK</button>'
+    result += '<br>'
     return result
 
 
@@ -110,19 +113,46 @@ raw_command_config = {
             'label': 'Disable transparency in the menu bar and elsewhere on Yosemite',
             'command': 'defaults write com.apple.universalaccess reduceTransparency -bool {0}',
             'type': 'boolean',
-            # 'parse_input': parse_boolean_input,
         },
         'AppleHighlightColor': {
             'label': 'Set highlight color',
             'command': 'defaults write NSGlobalDomain AppleHighlightColor -string "{0}"',
             'type': 'text',
             'widgets_width': 'is-half',
-            # 'parse_input': identity,
             'widget_attrs': {
-                # 'style': 'width: 50%'
                 'placeholder': '0.764700 0.976500 0.568600',
             },
         },
+        'NSTableViewDefaultSizeMode': {
+            # TODO: what numbers are valid and mean what?
+            'label': 'Set sidebar icon size to...',
+            'command': 'defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int {0}',
+            'type': 'number',
+            'widget_attrs': {
+                'placeholder': '2',
+            },
+        },
+        'AppleShowScrollBars': {
+            'label': 'Show scrollbars',
+            'command': 'defaults write NSGlobalDomain AppleShowScrollBars -string "{0}"',
+            'type': 'select',
+            'choices': (
+                ('WhenScrolling', 'When scrolling'),
+                ('Automatic', 'Automatic'),
+                ('Always', 'Always'),
+            ),
+            'widgets_width': 'is-two-fifths',
+        },
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
     },
     'Trackpad, mouse, keyboard, Bluetooth accessories, and input': {},
     'Screen': {},
@@ -149,9 +179,6 @@ raw_command_config = {
 # ########################################/
 # # General UI/UX                                                               #
 # ########################################/
-#
-# # Set sidebar icon size to medium
-# defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 #
 # # Always show scrollbars
 # defaults write NSGlobalDomain AppleShowScrollBars -string "Always"

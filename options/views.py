@@ -23,7 +23,6 @@ def api(request, *args, **kwargs):
     section_name = data['section_name']
     command_id = data['command_id']
     input = data['input']
-    # if request.POST
     command_data = command_config[section_name][command_id]
     command_template = command_data['command']
     input = command_data['stringify_input'](command_data['parse_input'](input))
