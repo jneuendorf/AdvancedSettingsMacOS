@@ -413,11 +413,204 @@ raw_command_config = {
         },
     },
     'Finder': {
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
+        'QuitMenuItem': {
+            'label': 'Allow quitting via <code>⌘ + Q</code>. Doing so will also hide desktop icons (really?).',
+            'command': 'defaults write com.apple.finder QuitMenuItem -bool {0}',
+            'type': 'boolean',
+        },
+        'DisableAllAnimations': {
+            'label': 'Disable window animations and "Get Info" animations.',
+            'command': 'defaults write com.apple.finder DisableAllAnimations -bool {0}',
+            'type': 'boolean',
+        },
+        'newFinderLocation': {
+            'label': (
+                'Set Desktop as the default location for new Finder windows. '
+                # 'For other paths, use <code>PfLo</code> and <code>file:///full/path/here/</code>.'
+            ),
+            'command': 'defaults write com.apple.finder NewWindowTarget -string "PfDe" && defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desktop/"',
+            'type': 'none',
+        },
+        'AppleShowAllFiles': {
+            'label': 'Show hidden files.',
+            'command': 'defaults write com.apple.finder AppleShowAllFiles -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowExternalHardDrivesOnDesktop': {
+            'label': 'Show icons for external hard drives.',
+            'command': 'defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowHardDrivesOnDesktop': {
+            'label': 'Show icons for hard drives.',
+            'command': 'defaults write com.apple.finder ShowHardDrivesOnDesktop -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowMountedServersOnDesktop': {
+            'label': 'Show icons for servers.',
+            'command': 'defaults write com.apple.finder ShowMountedServersOnDesktop -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowRemovableMediaOnDesktop': {
+            'label': 'Show icons for removable media.',
+            'command': 'defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool {0}',
+            'type': 'boolean',
+        },
+        'AppleShowAllExtensions': {
+            'label': 'Show all filename extensions.',
+            'command': 'defaults write NSGlobalDomain AppleShowAllExtensions -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowStatusBar': {
+            'label': 'Show status bar.',
+            'command': 'defaults write com.apple.finder ShowStatusBar -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowPathbar': {
+            'label': 'Show path bar.',
+            'command': 'defaults write com.apple.finder ShowPathbar -bool {0}',
+            'type': 'boolean',
+        },
+        '_FXShowPosixPathInTitle': {
+            'label': 'Display full POSIX path as Finder window title.',
+            'command': 'defaults write com.apple.finder _FXShowPosixPathInTitle -bool {0}',
+            'type': 'boolean',
+        },
+        '_FXSortFoldersFirst': {
+            'label': 'Keep folders on top when sorting by name.',
+            'command': 'defaults write com.apple.finder _FXSortFoldersFirst -bool {0}',
+            'type': 'boolean',
+        },
+        'FXDefaultSearchScope': {
+            'label': 'When performing a search, search the current folder by default.',
+            'command': 'defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"',
+            'type': 'none',
+        },
+        'FXEnableExtensionChangeWarning': {
+            'label': 'Disable the warning when changing a file extension.',
+            'command': 'defaults write com.apple.finder FXEnableExtensionChangeWarning -bool {0}',
+            'type': 'boolean',
+        },
+        'DirSpringingEnabled': {
+            'label': 'Enable spring loading for directories.',
+            'command': 'defaults write NSGlobalDomain com.apple.springing.enabled -bool {0}',
+            'type': 'boolean',
+        },
+        'DirSpringingDelay': {
+            'label': 'Remove the spring loading delay for directories.',
+            'command': 'defaults write NSGlobalDomain com.apple.springing.delay -float 0',
+            'type': 'none',
+        },
+        'DSDontWriteStores': {
+            'label': 'Avoid creating .DS_Store files on network or USB volumes.',
+            'command': 'defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool {0} && defaults write com.apple.desktopservices DSDontWriteUSBStores -bool {0}',
+            'type': 'boolean',
+        },
+        'diskImageVerification': {
+            'label': 'Disable disk image verification.',
+            'command': 'defaults write com.apple.frameworks.diskimages skip-verify -bool {0} && defaults write com.apple.frameworks.diskimages skip-verify-locked -bool {0} && defaults write com.apple.frameworks.diskimages skip-verify-remote -bool {0}',
+            'type': 'boolean',
+        },
+        'newFinderWindowOnVolumeMount': {
+            'label': 'Automatically open a new Finder window when a volume is mounted.',
+            'command': 'defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool {0} && defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool {0} && defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool {0}',
+            'type': 'boolean',
+        },
+        'showItemInfo': {
+            'label': 'Show item info near icons on the desktop and in other icon views.',
+            'command': (
+                '/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo {0}" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo {0}" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo {0}" ~/Library/Preferences/com.apple.finder.plist'
+            ),
+            'type': 'boolean',
+        },
+        'labelOnBottom': {
+            'label': 'Show item info to the right of the icons on the desktop.',
+            'command': '/usr/libexec/PlistBuddy -c "Set DesktopViewSettings:IconViewSettings:labelOnBottom {0}" ~/Library/Preferences/com.apple.finder.plist',
+            'type': 'boolean',
+        },
+        # # Expand the following File Info panes:
+        # # “General”, “Open with”, and “Sharing & Permissions”
+        # defaults write com.apple.finder FXInfoPanesExpanded -dict \
+        # 	General -bool true \
+        # 	OpenWith -bool true \
+        # 	Privileges -bool true
+        'snapToGrid': {
+            'label': 'Enable snap-to-grid for icons on the desktop and in other icon views.',
+            'command': (
+                '/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist'
+            ),
+            'type': 'none',
+        },
+        'gridSpacing': {
+            'label': 'Set grid spacing for icons on the desktop and in other icon views.',
+            'command': (
+                '/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing {0}" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing {0}" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing {0}" ~/Library/Preferences/com.apple.finder.plist'
+            ),
+            'type': 'number',
+            'default': 54,
+        },
+        'iconSize': {
+            'label': 'Set the size of icons on the desktop and in other icon views.',
+            'command': (
+                '/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize {0}" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize {0}" ~/Library/Preferences/com.apple.finder.plist'
+                ' && /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize {0}" ~/Library/Preferences/com.apple.finder.plist'
+            ),
+            'type': 'number',
+            'default': 64,
+        },
+        'FXPreferredViewStyle': {
+            'label': 'Default view in all Finder windows.',
+            'command': 'defaults write com.apple.finder FXPreferredViewStyle -string "{0}"',
+            'type': 'select',
+            'choices': (
+                ('Nlsv', 'List View'),
+                ('icnv', 'Icon View'),
+                ('clmv', 'Column View'),
+                ('Flwv', 'Cover Flow view'),
+            ),
+            'widgets_width': 'is-two-fifths',
+        },
+        'WarnOnEmptyTrash': {
+            'label': 'Disable the warning before emptying the Trash.',
+            'command': 'defaults write com.apple.finder WarnOnEmptyTrash -bool {0}',
+            'type': 'boolean',
+        },
+        'BrowseAllInterfaces': {
+            'label': 'Enable AirDrop over Ethernet and on unsupported Macs running Lion.',
+            'command': 'defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool {0}',
+            'type': 'boolean',
+        },
+        'showLibraryFolder': {
+            'label': 'Show the <code>~/Library</code> folder.',
+            'command': 'chflags nohidden ~/Library',
+            'type': 'none',
+        },
+        'showVolumesFolder': {
+            'label': 'Show the <code>/Volumes</code> folder.',
+            'command': 'chflags nohidden /Volumes',
+            'type': 'none',
+            'sudo': True,
+        },
+        'removeDropboxCheckmarks': {
+            'label': 'Remove Dropbox’s green checkmark icons in Finder.',
+            'command': (
+                'file=/Applications/Dropbox.app/Contents/Resources/emblem-dropbox-uptodate.icns; '
+                '[ -e "${file}" ] && mv -f "${file}" "${file}.bak"'
+            ),
+            'type': 'none',
+        },
+        'expandInfoPanes': {
+            'label': 'Expand the following File Info panes: “General”, “Open with”, and “Sharing & Permissions”.',
+            'command': 'defaults write com.apple.finder FXInfoPanesExpanded -dict General -bool true OpenWith -bool true Privileges -bool true',
+            'type': 'none',
+        },
     },
     'Dock, Dashboard, and hot corners': {
         # '': {
@@ -510,130 +703,8 @@ raw_command_config = {
         #     'type': '',
         # },
     },
-    'Sublime Text': {
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-    },
 }
 
-# ########################################/
-# # Finder                                                                      #
-# ########################################/
-#
-# # Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
-# defaults write com.apple.finder QuitMenuItem -bool true
-#
-# # Finder: disable window animations and Get Info animations
-# defaults write com.apple.finder DisableAllAnimations -bool true
-#
-# # Set Desktop as the default location for new Finder windows
-# # For other paths, use `PfLo` and `file:#/full/path/here/`
-# defaults write com.apple.finder NewWindowTarget -string "PfDe"
-# defaults write com.apple.finder NewWindowTargetPath -string "file:#${HOME}/Desktop/"
-#
-# # Show icons for hard drives, servers, and removable media on the desktop
-# defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
-# defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
-# defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
-# defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
-#
-# # Finder: show hidden files by default
-# #defaults write com.apple.finder AppleShowAllFiles -bool true
-#
-# # Finder: show all filename extensions
-# defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-#
-# # Finder: show status bar
-# defaults write com.apple.finder ShowStatusBar -bool true
-#
-# # Finder: show path bar
-# defaults write com.apple.finder ShowPathbar -bool true
-#
-# # Display full POSIX path as Finder window title
-# defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
-#
-# # Keep folders on top when sorting by name
-# defaults write com.apple.finder _FXSortFoldersFirst -bool true
-#
-# # When performing a search, search the current folder by default
-# defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-#
-# # Disable the warning when changing a file extension
-# defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-#
-# # Enable spring loading for directories
-# defaults write NSGlobalDomain com.apple.springing.enabled -bool true
-#
-# # Remove the spring loading delay for directories
-# defaults write NSGlobalDomain com.apple.springing.delay -float 0
-#
-# # Avoid creating .DS_Store files on network or USB volumes
-# defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-# defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
-#
-# # Disable disk image verification
-# defaults write com.apple.frameworks.diskimages skip-verify -bool true
-# defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
-# defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
-#
-# # Automatically open a new Finder window when a volume is mounted
-# defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool true
-# defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
-# defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
-#
-# # Show item info near icons on the desktop and in other icon views
-# /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
-#
-# # Show item info to the right of the icons on the desktop
-# /usr/libexec/PlistBuddy -c "Set DesktopViewSettings:IconViewSettings:labelOnBottom false" ~/Library/Preferences/com.apple.finder.plist
-#
-# # Enable snap-to-grid for icons on the desktop and in other icon views
-# /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
-#
-# # Increase grid spacing for icons on the desktop and in other icon views
-# /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 100" ~/Library/Preferences/com.apple.finder.plist
-#
-# # Increase the size of icons on the desktop and in other icon views
-# /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 80" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 80" ~/Library/Preferences/com.apple.finder.plist
-# /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 80" ~/Library/Preferences/com.apple.finder.plist
-#
-# # Use list view in all Finder windows by default
-# # Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
-# defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
-#
-# # Disable the warning before emptying the Trash
-# defaults write com.apple.finder WarnOnEmptyTrash -bool false
-#
-# # Enable AirDrop over Ethernet and on unsupported Macs running Lion
-# defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
-#
-# # Show the ~/Library folder
-# chflags nohidden ~/Library
-#
-# # Show the /Volumes folder
-# sudo chflags nohidden /Volumes
-#
-# # Remove Dropbox’s green checkmark icons in Finder
-# file=/Applications/Dropbox.app/Contents/Resources/emblem-dropbox-uptodate.icns
-# [ -e "${file}" ] && mv -f "${file}" "${file}.bak"
-#
-# # Expand the following File Info panes:
-# # “General”, “Open with”, and “Sharing & Permissions”
-# defaults write com.apple.finder FXInfoPanesExpanded -dict \
-# 	General -bool true \
-# 	OpenWith -bool true \
-# 	Privileges -bool true
-#
 # ########################################/
 # # Dock, Dashboard, and hot corners                                            #
 # ########################################/
@@ -1104,99 +1175,6 @@ raw_command_config = {
 # defaults write com.operasoftware.OperaDeveloper PMPrintingExpandedStateForPrint2 -boolean true
 #
 # ########################################/
-# # SizeUp.app                                                                  #
-# ########################################/
-#
-# # Start SizeUp at login
-# defaults write com.irradiatedsoftware.SizeUp StartAtLogin -bool true
-#
-# # Don’t show the preferences window on next start
-# defaults write com.irradiatedsoftware.SizeUp ShowPrefsOnNextStart -bool false
-#
-#
-# ########################################/
-# # Sublime Text                                                                #
-# ########################################/
-#
-# # Install Sublime Text settings
-# # cp -r init/Preferences.sublime-settings ~/Library/Application\ Support/Sublime\ Text*/Packages/User/Preferences.sublime-settings 2> /dev/null
-#
-#
-# ########################################/
-# # Spectacle.app                                                               #
-# ########################################/
-#
-# # Set up my preferred keyboard shortcuts
-# cp -r init/spectacle.json ~/Library/Application\ Support/Spectacle/Shortcuts.json 2> /dev/null
-#
-# ########################################/
-# # Transmission.app                                                            #
-# ########################################/
-#
-# # Use `~/Documents/Torrents` to store incomplete downloads
-# defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-# defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Documents/Torrents"
-#
-# # Use `~/Downloads` to store completed downloads
-# defaults write org.m0k.transmission DownloadLocationConstant -bool true
-#
-# # Don’t prompt for confirmation before downloading
-# defaults write org.m0k.transmission DownloadAsk -bool false
-# defaults write org.m0k.transmission MagnetOpenAsk -bool false
-#
-# # Don’t prompt for confirmation before removing non-downloading active transfers
-# defaults write org.m0k.transmission CheckRemoveDownloading -bool true
-#
-# # Trash original torrent files
-# defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
-#
-# # Hide the donate message
-# defaults write org.m0k.transmission WarningDonate -bool false
-# # Hide the legal disclaimer
-# defaults write org.m0k.transmission WarningLegal -bool false
-#
-# # IP block list.
-# # Source: https:#giuliomac.wordpress.com/2014/02/19/best-blocklist-for-transmission/
-# defaults write org.m0k.transmission BlocklistNew -bool true
-# defaults write org.m0k.transmission BlocklistURL -string "http:#john.bitsurge.net/public/biglist.p2p.gz"
-# defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
-#
-# # Randomize port on launch
-# defaults write org.m0k.transmission RandomPort -bool true
-#
-# ########################################/
-# # Twitter.app                                                                 #
-# ########################################/
-#
-# # Disable smart quotes as it’s annoying for code tweets
-# defaults write com.twitter.twitter-mac AutomaticQuoteSubstitutionEnabled -bool false
-#
-# # Show the app window when clicking the menu bar icon
-# defaults write com.twitter.twitter-mac MenuItemBehavior -int 1
-#
-# # Enable the hidden ‘Develop’ menu
-# defaults write com.twitter.twitter-mac ShowDevelopMenu -bool true
-#
-# # Open links in the background
-# defaults write com.twitter.twitter-mac openLinksInBackground -bool true
-#
-# # Allow closing the ‘new tweet’ window by pressing `Esc`
-# defaults write com.twitter.twitter-mac ESCClosesComposeWindow -bool true
-#
-# # Show full names rather than Twitter handles
-# defaults write com.twitter.twitter-mac ShowFullNames -bool true
-#
-# # Hide the app in the background if it’s not the front-most window
-# defaults write com.twitter.twitter-mac HideInBackground -bool true
-#
-# ########################################/
-# # Tweetbot.app                                                                #
-# ########################################/
-#
-# # Bypass the annoyingly slow t.co URL shortener
-# defaults write com.tapbots.TweetbotMac OpenURLsDirectly -bool true
-#
-# ########################################/
 # # Kill affected applications                                                  #
 # ########################################/
 #
@@ -1214,13 +1192,8 @@ raw_command_config = {
 # 	"Opera" \
 # 	"Photos" \
 # 	"Safari" \
-# 	"SizeUp" \
-# 	"Spectacle" \
 # 	"SystemUIServer" \
 # 	"Terminal" \
-# 	"Transmission" \
-# 	"Tweetbot" \
-# 	"Twitter" \
 # 	"iCal"; do
 # 	killall "${app}" &> /dev/null
 # done
