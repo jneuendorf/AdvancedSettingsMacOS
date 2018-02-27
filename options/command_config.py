@@ -297,111 +297,228 @@ raw_command_config = {
             'type': 'none',
             'sudo': True,
         },
+    },
+    'Trackpad, mouse, keyboard, Bluetooth accessories, and input': {
+        # # Set language and text formats
+        # # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with
+        # # `Inches`, `en_GB` with `en_US`, and `true` with `false`.
+        # defaults write NSGlobalDomain AppleLanguages -array "en" "nl"
+        # defaults write NSGlobalDomain AppleLocale -string "en_GB@currency=EUR"
+        # defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
+        # defaults write NSGlobalDomain AppleMetricUnits -bool true
+        'tapClick': {
+            'label': 'Trackpad: enable tap to click for this user and for the login screen.',
+            'command': 'defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true && defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1 && defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1',
+            'type': 'none',
+        },
+        'bottomRightCornerToRightClick': {
+            'label': 'Trackpad: map bottom right corner to right-click.',
+            'command': (
+                'defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2'
+                ' && defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true'
+                ' && defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1'
+                ' && defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true'
+            ),
+            'type': 'none',
+        },
+        'naturalScrolling': {
+            'label': 'Disable “natural” (Lion-style) scrolling.',
+            'command': 'defaults write NSGlobalDomain com.apple.swipescrolldirection -bool {0}',
+            'type': 'boolean',
+        },
+        'increaseSoundQualityForBluetoothHeadphones': {
+            'label': 'Increase sound quality for Bluetooth headphones/headsets.',
+            'command': 'defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40',
+            'type': 'none',
+        },
+        'AppleKeyboardUIMode': {
+            'label': 'Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs).',
+            'command': 'defaults write NSGlobalDomain AppleKeyboardUIMode -int 3',
+            'type': 'none',
+        },
+        'ctrlZoom': {
+            'label': 'Use scroll gesture with the Ctrl (^) modifier key to zoom.',
+            'command': (
+                'defaults write com.apple.universalaccess closeViewScrollWheelToggle -bool true'
+                ' && defaults write com.apple.universalaccess HIDScrollZoomModifierMask -int 262144'
+            ),
+            'type': 'none',
+        },
+        'closeViewZoomFollowsFocus': {
+            'label': 'Follow the keyboard focus while zoomed in.',
+            'command': 'defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool {0}',
+            'type': 'boolean',
+        },
+        'ApplePressAndHoldEnabled': {
+            'label': 'Disable press-and-hold for keys in favor of key repeat.',
+            'command': 'defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'KeyRepeat': {
+            'label': 'Set a blazingly fast keyboard repeat rate.',
+            'command': 'defaults write NSGlobalDomain KeyRepeat -int 1 && defaults write NSGlobalDomain InitialKeyRepeat -int 10',
+            'type': 'none',
+        },
+        'showInputMenu': {
+            'label': 'Show language menu in the top right corner of the boot screen.',
+            'command': 'defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool {0}',
+            'type': 'boolean',
+            'sudo': True,
+        },
+        'noMediaKeysForITunes': {
+            'label': 'Stop iTunes from responding to the keyboard media keys.',
+            'command': 'launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null',
+            'type': 'none',
+        },
+    },
+    'Screen': {
+        'askForPassword': {
+            'label': 'Require password immediately after sleep or screen saver begins.',
+            'command': 'defaults write com.apple.screensaver askForPassword -int 1 && defaults write com.apple.screensaver askForPasswordDelay -int 0',
+            'type': 'none',
+        },
+        'screencaptureLocation': {
+            'label': 'Save screenshots to the desktop.',
+            'command': 'defaults write com.apple.screencapture location -string "${HOME}/Desktop"',
+            'type': 'text',
+        },
+        'screencaptureType': {
+            'label': 'Save screenshots in format',
+            'command': 'defaults write com.apple.screencapture type -string "png"',
+            'type': 'select',
+            'choices': (
+                ('png', 'PNG'),
+                ('jpg', 'JPG'),
+                ('gif', 'GIF'),
+                ('pdf', 'PDF'),
+                ('tiff', 'TIFF'),
+                ('bpm', 'BMP'),
+            ),
+        },
+        'screencaptureDisableShadow': {
+            'label': 'Disable shadow in screenshots.',
+            'command': 'defaults write com.apple.screencapture disable-shadow -bool {0}',
+            'type': 'boolean',
+        },
+        'AppleFontSmoothing': {
+            'label': 'Enable subpixel font rendering on non-Apple LCDs. See <a href="Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501">this issue</a>.',
+            'command': 'defaults write NSGlobalDomain AppleFontSmoothing -int 1',
+            'type': 'none',
+        },
+        'DisplayResolutionEnabled': {
+            'label': 'Enable HiDPI display modes (requires restart).',
+            'command': 'defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool {0}',
+            'type': 'boolean',
+            'sudo': True,
+        },
+    },
+    'Finder': {
         # '': {
         #     'label': '',
         #     'command': '',
         #     'type': '',
         # },
     },
-    'Trackpad, mouse, keyboard, Bluetooth accessories, and input': {},
-    'Screen': {},
-    'Finder': {},
-    'Dock, Dashboard, and hot corners': {},
-    'Safari & WebKit ': {},
-    'Mail': {},
-    'Terminal & iTerm 2': {},
-    'Time Machine': {},
-    'Activity Monitor': {},
-    'Address Book, Dashboard, iCal, TextEdit, and Disk Utility': {},
-    'Mac App Store': {},
-    'Photos': {},
-    'Messages': {},
-    'Google Chrome & Google Chrome Canary': {},
-    'GPGMail 2': {},
-    'Opera & Opera Developer': {},
-    'Sublime Text': {},
+    'Dock, Dashboard, and hot corners': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Safari & WebKit ': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Mail': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Terminal & iTerm 2': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Time Machine': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Activity Monitor': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Address Book, Dashboard, iCal, TextEdit, and Disk Utility': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Mac App Store': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Photos': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Messages': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Google Chrome & Google Chrome Canary': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'GPGMail 2': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Opera & Opera Developer': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
+    'Sublime Text': {
+        # '': {
+        #     'label': '',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
 }
 
-
-# ########################################/
-# # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
-# ########################################/
-#
-# # Trackpad: enable tap to click for this user and for the login screen
-# defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-# defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-# defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-#
-# # Trackpad: map bottom right corner to right-click
-# defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
-# defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
-# defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
-# defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
-#
-# # Disable “natural” (Lion-style) scrolling
-# defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
-#
-# # Increase sound quality for Bluetooth headphones/headsets
-# defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
-#
-# # Enable full keyboard access for all controls
-# # (e.g. enable Tab in modal dialogs)
-# defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
-#
-# # Use scroll gesture with the Ctrl (^) modifier key to zoom
-# defaults write com.apple.universalaccess closeViewScrollWheelToggle -bool true
-# defaults write com.apple.universalaccess HIDScrollZoomModifierMask -int 262144
-# # Follow the keyboard focus while zoomed in
-# defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
-#
-# # Disable press-and-hold for keys in favor of key repeat
-# defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-#
-# # Set a blazingly fast keyboard repeat rate
-# defaults write NSGlobalDomain KeyRepeat -int 1
-# defaults write NSGlobalDomain InitialKeyRepeat -int 10
-#
-# # Set language and text formats
-# # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with
-# # `Inches`, `en_GB` with `en_US`, and `true` with `false`.
-# defaults write NSGlobalDomain AppleLanguages -array "en" "nl"
-# defaults write NSGlobalDomain AppleLocale -string "en_GB@currency=EUR"
-# defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
-# defaults write NSGlobalDomain AppleMetricUnits -bool true
-#
-# # Show language menu in the top right corner of the boot screen
-# sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true
-#
-# # Set the timezone; see `sudo systemsetup -listtimezones` for other values
-# sudo systemsetup -settimezone "Europe/Brussels" > /dev/null
-#
-# # Stop iTunes from responding to the keyboard media keys
-# #launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
-#
-# ########################################/
-# # Screen                                                                      #
-# ########################################/
-#
-# # Require password immediately after sleep or screen saver begins
-# defaults write com.apple.screensaver askForPassword -int 1
-# defaults write com.apple.screensaver askForPasswordDelay -int 0
-#
-# # Save screenshots to the desktop
-# defaults write com.apple.screencapture location -string "${HOME}/Desktop"
-#
-# # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
-# defaults write com.apple.screencapture type -string "png"
-#
-# # Disable shadow in screenshots
-# defaults write com.apple.screencapture disable-shadow -bool true
-#
-# # Enable subpixel font rendering on non-Apple LCDs
-# # Reference: https:#github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
-# defaults write NSGlobalDomain AppleFontSmoothing -int 1
-#
-# # Enable HiDPI display modes (requires restart)
-# sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
-#
 # ########################################/
 # # Finder                                                                      #
 # ########################################/

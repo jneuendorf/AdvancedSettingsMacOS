@@ -17,6 +17,7 @@ def index(request):
     )
 
 
+# TODO: sudo, killall
 @csrf_exempt
 def api(request, *args, **kwargs):
     data = json.loads(request.body)
@@ -29,4 +30,5 @@ def api(request, *args, **kwargs):
 
     print('would run:')
     print(command_template.format(input))
+    # TODO: output
     return HttpResponse('[]')
