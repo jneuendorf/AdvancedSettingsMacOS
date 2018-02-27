@@ -5,20 +5,16 @@ from uuid import uuid4 as uuid
     # echo "$pw" | sudo -S stufftorunasroot
     # echo "$pw" | sudo -S -v
 
-
 # # Close any open System Preferences panes, to prevent them from overriding
 # # settings we’re about to change
 # osascript -e 'tell application "System Preferences" to quit'
 
-
-class InputError(Exception):
-    def __init__(self, message='Could not parse input.', *args, **kwargs):
-        super().__init__(message, *args, **kwargs)
-
+# class InputError(Exception):
+#     def __init__(self, message='Could not parse input.', *args, **kwargs):
+#         super().__init__(message, *args, **kwargs)
 
 def identity(x):
     return x
-
 
 def stringify_boolean_input(input):
     return 'true' if input else 'false'

@@ -1,7 +1,17 @@
 import commandConfig from './commands.js'
 
+$('.store-password').click(event => {
+    const pw = prompt('Tell me your password!')
+    if (pw != null) {
+        localStorage.setItem('password', pw)
+    }
+})
+$('.delete-password').click(event => {
+    localStorage.removeItem('password')
+})
 
-$(".send-command").click(event => {
+
+$('.send-command').click(event => {
     const button = $(event.target)
     const value_source = button.parent().find('[data-value-source]')
     const section_name = button.attr('data-section-name')
