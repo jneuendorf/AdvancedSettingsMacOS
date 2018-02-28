@@ -1,13 +1,28 @@
 import commandConfig from './commands.js'
 
 $('.store-password').click(event => {
-    const pw = prompt('Tell me your password!')
-    if (pw != null) {
-        localStorage.setItem('password', pw)
+    const password = prompt('Tell me your password!')
+    if (password != null) {
+        fetch('store_password/', {
+            headers: {
+                'Content-Type': 'text/plain; charset=utf-8',
+            },
+            method: 'POST',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            body: password,
+        })
     }
 })
 $('.delete-password').click(event => {
-    localStorage.removeItem('password')
+    fetch('delete_password/', {
+        headers: {
+            'Content-Type': 'text/plain; charset=utf-8',
+        },
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+    })
 })
 
 
