@@ -414,6 +414,12 @@ raw_command_config = {
             'command': 'defaults write com.apple.finder QuitMenuItem -bool {0}',
             'type': 'boolean',
         },
+        # TODO: this is new (tell github repo!)
+        'CreateDesktop': {
+            'label': 'Show icons on the desktop.',
+            'command': 'defaults write com.apple.finder CreateDesktop -bool {0}',
+            'type': 'boolean',
+        },
         'DisableAllAnimations': {
             'label': 'Disable window animations and "Get Info" animations.',
             'command': 'defaults write com.apple.finder DisableAllAnimations -bool {0}',
@@ -609,18 +615,298 @@ raw_command_config = {
         },
     },
     'Dock, Dashboard, and hot corners': {
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
+        'mouse-over-hilite-stack': {
+            'label': 'Enable highlight hover effect for the grid view of a stack (Dock).',
+            'command': 'defaults write com.apple.dock mouse-over-hilite-stack -bool {0}',
+            'type': 'boolean',
+        },
+        'tilesize': {
+            'label': 'Set the icon size of Dock items.',
+            'command': 'defaults write com.apple.dock tilesize -int {}',
+            'type': 'number',
+        },
+        # TODO: what choices exist?
+        'mineffect': {
+            'label': 'Change minimize/maximize window effect.',
+            'command': 'defaults write com.apple.dock mineffect -string "{0}"',
+            'type': 'select',
+            'choices': (
+                ('scale', 'Scale'),
+            ),
+            'widgets_width': 'is-one-third',
+        },
+        'minimize-to-application': {
+            'label': 'Minimize windows into their application&rsquo;s icon.',
+            'command': 'defaults write com.apple.dock minimize-to-application -bool {}',
+            'type': 'boolean',
+        },
+        'enable-spring-load-actions-on-all-items': {
+            'label': 'Enable spring loading for all Dock items.',
+            'command': 'defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true',
+            'type': 'boolean',
+        },
+        'show-process-indicators': {
+            'label': 'Show indicator lights for open applications in the Dock.',
+            'command': 'defaults write com.apple.dock show-process-indicators -bool {}',
+            'type': 'boolean',
+        },
+        'persistent-apps': {
+            'label': 'Wipe all (default) app icons from the Dock. This is only really useful when setting up a new Mac, or if you don’t use.',
+            'command': 'defaults write com.apple.dock persistent-apps -array',
+            'type': 'none',
+        },
+        'static-only': {
+            'label': 'Show only open applications in the Dock.',
+            'command': 'defaults write com.apple.dock static-only -bool {0}',
+            'type': 'boolean',
+        },
+        'launchanim': {
+            'label': 'Don’t animate opening applications from the Dock.',
+            'command': 'defaults write com.apple.dock launchanim -bool {0}',
+            'type': 'boolean',
+        },
+        # TODO: suggest reasonable numeric values
+        'expose-animation-duration': {
+            'label': 'Speed up Mission Control animations.',
+            'command': 'defaults write com.apple.dock expose-animation-duration -float 0.1',
+            'type': 'none',
+        },
+        'expose-group-by-app': {
+            'label': 'Don’t group windows by application in Mission Control (i.e. use the old Exposé behavior instead).',
+            'command': 'defaults write com.apple.dock expose-group-by-app -bool {0}',
+            'type': 'boolean',
+        },
+        'mcx-disabled': {
+            'label': 'Disable Dashboard.',
+            'command': 'defaults write com.apple.dashboard mcx-disabled -bool {0}',
+            'type': 'boolean',
+        },
+        'dashboard-in-overlay': {
+            'label': 'Don’t show Dashboard as a Space.',
+            'command': 'defaults write com.apple.dock dashboard-in-overlay -bool {0}',
+            'type': 'boolean',
+        },
+        'mru-spaces': {
+            'label': 'Don’t automatically rearrange Spaces based on most recent use.',
+            'command': 'defaults write com.apple.dock mru-spaces -bool {0}',
+            'type': 'boolean',
+        },
+        'autohide-delay': {
+            'label': 'Set the auto-hiding Dock delay.',
+            'command': 'defaults write com.apple.dock autohide-delay -float {0}',
+            'type': 'number',
+        },
+        'autohide-time-modifier': {
+            'label': 'Set the animation speed when hiding/showing the Dock.',
+            'command': 'defaults write com.apple.dock autohide-time-modifier -float {0}',
+            'type': 'number',
+        },
+        'autohide': {
+            'label': 'Automatically hide and show the Dock.',
+            'command': 'defaults write com.apple.dock autohide -bool {0}',
+            'type': 'boolean',
+        },
+        'showhidden': {
+            'label': 'Make Dock icons of hidden applications translucent.',
+            'command': 'defaults write com.apple.dock showhidden -bool {0}',
+            'type': 'boolean',
+        },
+        'showLaunchpadGestureEnabled': {
+            'label': 'Disable the Launchpad gesture (pinch with thumb and three fingers).',
+            'command': 'defaults write com.apple.dock showLaunchpadGestureEnabled -int 0',
+            'type': 'none',
+        },
+        'ResetLaunchpad': {
+            'label': 'Reset Launchpad, but keep the desktop wallpaper intact.',
+            'command': 'find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete',
+            'type': 'none',
+        },
+        # TODO: sudo before BOTH commands?!
+        'addIOsWatchSimulatorToLaunchpad': {
+            'label': 'Add iOS & Watch Simulator to Launchpad.',
+            'command': 'ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app" && ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (Watch).app" "/Applications/Simulator (Watch).app"',
+            'type': 'none',
+            'sudo': True,
+        },
+        'spacerLeft': {
+            'label': 'Add a spacer to the left side of the Dock (where the applications are).',
+            'command': 'defaults write com.apple.dock persistent-apps -array-add \'{tile-data={}; tile-type="spacer-tile";}\'',
+            'type': 'none',
+        },
+        'spacerRight': {
+            'label': 'Add a spacer to the right side of the Dock (where the Trash is).',
+            'command': 'defaults write com.apple.dock persistent-others -array-add \'{tile-data={}; tile-type="spacer-tile";}\'',
+            'type': 'none',
+        },
+        # # Hot corners
+        # # Possible values:
+        # #  0: no-op
+        # #  2: Mission Control
+        # #  3: Show application windows
+        # #  4: Desktop
+        # #  5: Start screen saver
+        # #  6: Disable screen saver
+        # #  7: Dashboard
+        # # 10: Put display to sleep
+        # # 11: Launchpad
+        # # 12: Notification Center
+        # # Top left screen corner → Mission Control
+        # defaults write com.apple.dock wvous-tl-corner -int 2
+        # defaults write com.apple.dock wvous-tl-modifier -int 0
+        # # Top right screen corner → Desktop
+        # defaults write com.apple.dock wvous-tr-corner -int 4
+        # defaults write com.apple.dock wvous-tr-modifier -int 0
+        # # Bottom left screen corner → Start screen saver
+        # defaults write com.apple.dock wvous-bl-corner -int 5
+        # defaults write com.apple.dock wvous-bl-modifier -int 0
     },
     'Safari & WebKit ': {
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
+        'sendSearchQueries': {
+            'label': 'Privacy: don’t send search queries to Apple.',
+            'command': 'if [[ "{0}" == "true" ]]; then defaults write com.apple.Safari UniversalSearchEnabled -bool false && defaults write com.apple.Safari SuppressSearchSuggestions -bool true; else defaults write com.apple.Safari UniversalSearchEnabled -bool true && defaults write com.apple.Safari SuppressSearchSuggestions -bool false; fi',
+            'type': 'boolean',
+        },
+        'tabHighlight': {
+            'label': 'Press Tab to highlight each item on a web page.',
+            'command': 'defaults write com.apple.Safari WebKitTabToLinksPreferenceKey -bool {0} && defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowFullURLInSmartSearchField': {
+            'label': 'Show the full URL in the address bar (note: this still hides the scheme).',
+            'command': 'defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool {0}',
+            'type': 'boolean',
+        },
+        'HomePage': {
+            'label': 'Set Safari’s home page to `about:blank` for faster loading.',
+            'command': 'defaults write com.apple.Safari HomePage -string "{0}"',
+            'type': 'text',
+            'default': 'about:blank',
+            'widgets_width': 'is-two-fifths',
+        },
+        'AutoOpenSafeDownloads': {
+            'label': 'Prevent Safari from opening ‘safe’ files automatically after downloading.',
+            'command': 'defaults write com.apple.Safari AutoOpenSafeDownloads -bool {0}',
+            'type': 'boolean',
+        },
+        'WebKit2BackspaceKeyNavigationEnabled': {
+            'label': 'Allow hitting the Backspace key to go to the previous page in history.',
+            'command': 'defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowFavoritesBar': {
+            'label': 'Hide Safari’s bookmarks bar by default.',
+            'command': 'defaults write com.apple.Safari ShowFavoritesBar -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowSidebarInTopSites': {
+            'label': 'Hide Safari’s sidebar in Top Sites.',
+            'command': 'defaults write com.apple.Safari ShowSidebarInTopSites -bool {0}',
+            'type': 'boolean',
+        },
+        'DebugSnapshotsUpdatePolicy': {
+            'label': 'Disable Safari’s thumbnail cache for History and Top Sites.',
+            'command': 'defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2',
+            'type': 'none',
+        },
+        'IncludeInternalDebugMenu': {
+            'label': 'Enable Safari’s debug menu.',
+            'command': 'defaults write com.apple.Safari IncludeInternalDebugMenu -bool {0}',
+            'type': 'boolean',
+        },
+        'FindOnPageMatchesWordStartsOnly': {
+            'label': 'Make Safari’s search banners default to Contains instead of Starts With.',
+            'command': 'defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool {0}',
+            'type': 'boolean',
+        },
+        'ProxiesInBookmarksBar': {
+            'label': 'Remove useless icons from Safari’s bookmarks bar.',
+            'command': 'defaults write com.apple.Safari ProxiesInBookmarksBar "()"',
+            'type': 'none',
+        },
+        'IncludeDevelopMenu': {
+            'label': 'Enable the Develop menu and the Web Inspector in Safari.',
+            'command': (
+                'defaults write com.apple.Safari IncludeDevelopMenu -bool {0} && '
+                'defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool {0} && '
+                'defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'WebKitDeveloperExtras': {
+            'label': 'Add a context menu item for showing the Web Inspector in web views.',
+            'command': 'defaults write NSGlobalDomain WebKitDeveloperExtras -bool {0}',
+            'type': 'boolean',
+        },
+        'WebContinuousSpellCheckingEnabled': {
+            'label': 'Enable continuous spellchecking.',
+            'command': 'defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'WebAutomaticSpellingCorrectionEnabled': {
+            'label': 'Disable auto-correct.',
+            'command': 'defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'AutoFillFromAddressBook': {
+            'label': 'Disable AutoFill for addresses.',
+            'command': 'defaults write com.apple.Safari AutoFillFromAddressBook -bool {0}',
+            'type': 'boolean',
+        },
+        'AutoFillPasswords': {
+            'label': 'Disable AutoFill for passwords.',
+            'command': 'defaults write com.apple.Safari AutoFillPasswords -bool {0}',
+            'type': 'boolean',
+        },
+        'AutoFillCreditCardData': {
+            'label': 'Disable AutoFill for credit card data.',
+            'command': 'defaults write com.apple.Safari AutoFillCreditCardData -bool {0}',
+            'type': 'boolean',
+        },
+        'AutoFillMiscellaneousForms': {
+            'label': 'Disable AutoFill for miscellaneous data.',
+            'command': 'defaults write com.apple.Safari AutoFillMiscellaneousForms -bool {0}',
+            'type': 'boolean',
+        },
+        'WarnAboutFraudulentWebsites': {
+            'label': 'Warn about fraudulent websites.',
+            'command': 'defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool {0}',
+            'type': 'boolean',
+        },
+        'WebKitPluginsEnabled': {
+            'label': 'Disable plug-ins.',
+            'command': 'defaults write com.apple.Safari WebKitPluginsEnabled -bool {0} && defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'WebKitJavaEnabled': {
+            'label': 'Disable Java.',
+            'command': 'defaults write com.apple.Safari WebKitJavaEnabled -bool {0} && defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'blockPopUps': {
+            'label': 'Block pop-up windows.',
+            'command': 'defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false && defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false',
+            'type': 'boolean',
+        },
+        'disableAutoPlayingVideo': {
+            'label': 'Disable auto-playing video.',
+            'command': (
+                'defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool {0}'
+                'defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline -bool {0}'
+                'defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool {0}'
+                'defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'SendDoNotTrackHTTPHeader': {
+            'label': 'Enable “Do Not Track”.',
+            'command': 'defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool tru{0}',
+            'type': 'boolean',
+        },
+        'InstallExtensionUpdatesAutomatically': {
+            'label': 'Update extensions automatically.',
+            'command': 'defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool tru{0}',
+            'type': 'boolean',
+        },
     },
     'Mail': {
         # '': {
@@ -701,191 +987,6 @@ raw_command_config = {
     },
 }
 
-# ########################################/
-# # Dock, Dashboard, and hot corners                                            #
-# ########################################/
-#
-# # Enable highlight hover effect for the grid view of a stack (Dock)
-# defaults write com.apple.dock mouse-over-hilite-stack -bool true
-#
-# # Set the icon size of Dock items to 36 pixels
-# defaults write com.apple.dock tilesize -int 36
-#
-# # Change minimize/maximize window effect
-# defaults write com.apple.dock mineffect -string "scale"
-#
-# # Minimize windows into their application’s icon
-# defaults write com.apple.dock minimize-to-application -bool true
-#
-# # Enable spring loading for all Dock items
-# defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true
-#
-# # Show indicator lights for open applications in the Dock
-# defaults write com.apple.dock show-process-indicators -bool true
-#
-# # Wipe all (default) app icons from the Dock
-# # This is only really useful when setting up a new Mac, or if you don’t use
-# # the Dock to launch apps.
-# #defaults write com.apple.dock persistent-apps -array
-#
-# # Show only open applications in the Dock
-# #defaults write com.apple.dock static-only -bool true
-#
-# # Don’t animate opening applications from the Dock
-# defaults write com.apple.dock launchanim -bool false
-#
-# # Speed up Mission Control animations
-# defaults write com.apple.dock expose-animation-duration -float 0.1
-#
-# # Don’t group windows by application in Mission Control
-# # (i.e. use the old Exposé behavior instead)
-# defaults write com.apple.dock expose-group-by-app -bool false
-#
-# # Disable Dashboard
-# defaults write com.apple.dashboard mcx-disabled -bool true
-#
-# # Don’t show Dashboard as a Space
-# defaults write com.apple.dock dashboard-in-overlay -bool true
-#
-# # Don’t automatically rearrange Spaces based on most recent use
-# defaults write com.apple.dock mru-spaces -bool false
-#
-# # Remove the auto-hiding Dock delay
-# defaults write com.apple.dock autohide-delay -float 0
-# # Remove the animation when hiding/showing the Dock
-# defaults write com.apple.dock autohide-time-modifier -float 0
-#
-# # Automatically hide and show the Dock
-# defaults write com.apple.dock autohide -bool true
-#
-# # Make Dock icons of hidden applications translucent
-# defaults write com.apple.dock showhidden -bool true
-#
-# # Disable the Launchpad gesture (pinch with thumb and three fingers)
-# #defaults write com.apple.dock showLaunchpadGestureEnabled -int 0
-#
-# # Reset Launchpad, but keep the desktop wallpaper intact
-# find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
-#
-# # Add iOS & Watch Simulator to Launchpad
-# sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
-# sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (Watch).app" "/Applications/Simulator (Watch).app"
-#
-# # Add a spacer to the left side of the Dock (where the applications are)
-# #defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type="spacer-tile";}'
-# # Add a spacer to the right side of the Dock (where the Trash is)
-# #defaults write com.apple.dock persistent-others -array-add '{tile-data={}; tile-type="spacer-tile";}'
-#
-# # Hot corners
-# # Possible values:
-# #  0: no-op
-# #  2: Mission Control
-# #  3: Show application windows
-# #  4: Desktop
-# #  5: Start screen saver
-# #  6: Disable screen saver
-# #  7: Dashboard
-# # 10: Put display to sleep
-# # 11: Launchpad
-# # 12: Notification Center
-# # Top left screen corner → Mission Control
-# defaults write com.apple.dock wvous-tl-corner -int 2
-# defaults write com.apple.dock wvous-tl-modifier -int 0
-# # Top right screen corner → Desktop
-# defaults write com.apple.dock wvous-tr-corner -int 4
-# defaults write com.apple.dock wvous-tr-modifier -int 0
-# # Bottom left screen corner → Start screen saver
-# defaults write com.apple.dock wvous-bl-corner -int 5
-# defaults write com.apple.dock wvous-bl-modifier -int 0
-#
-# ########################################/
-# # Safari & WebKit                                                             #
-# ########################################/
-#
-# # Privacy: don’t send search queries to Apple
-# defaults write com.apple.Safari UniversalSearchEnabled -bool false
-# defaults write com.apple.Safari SuppressSearchSuggestions -bool true
-#
-# # Press Tab to highlight each item on a web page
-# defaults write com.apple.Safari WebKitTabToLinksPreferenceKey -bool true
-# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks -bool true
-#
-# # Show the full URL in the address bar (note: this still hides the scheme)
-# defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
-#
-# # Set Safari’s home page to `about:blank` for faster loading
-# defaults write com.apple.Safari HomePage -string "about:blank"
-#
-# # Prevent Safari from opening ‘safe’ files automatically after downloading
-# defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
-#
-# # Allow hitting the Backspace key to go to the previous page in history
-# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
-#
-# # Hide Safari’s bookmarks bar by default
-# defaults write com.apple.Safari ShowFavoritesBar -bool false
-#
-# # Hide Safari’s sidebar in Top Sites
-# defaults write com.apple.Safari ShowSidebarInTopSites -bool false
-#
-# # Disable Safari’s thumbnail cache for History and Top Sites
-# defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
-#
-# # Enable Safari’s debug menu
-# defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-#
-# # Make Safari’s search banners default to Contains instead of Starts With
-# defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
-#
-# # Remove useless icons from Safari’s bookmarks bar
-# defaults write com.apple.Safari ProxiesInBookmarksBar "()"
-#
-# # Enable the Develop menu and the Web Inspector in Safari
-# defaults write com.apple.Safari IncludeDevelopMenu -bool true
-# defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
-#
-# # Add a context menu item for showing the Web Inspector in web views
-# defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
-#
-# # Enable continuous spellchecking
-# defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
-# # Disable auto-correct
-# defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
-#
-# # Disable AutoFill
-# defaults write com.apple.Safari AutoFillFromAddressBook -bool false
-# defaults write com.apple.Safari AutoFillPasswords -bool false
-# defaults write com.apple.Safari AutoFillCreditCardData -bool false
-# defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
-#
-# # Warn about fraudulent websites
-# defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
-#
-# # Disable plug-ins
-# defaults write com.apple.Safari WebKitPluginsEnabled -bool false
-# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool false
-#
-# # Disable Java
-# defaults write com.apple.Safari WebKitJavaEnabled -bool false
-# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
-#
-# # Block pop-up windows
-# defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
-# defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
-#
-# # Disable auto-playing video
-# #defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool false
-# #defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline -bool false
-# #defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
-# #defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
-#
-# # Enable “Do Not Track”
-# defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
-#
-# # Update extensions automatically
-# defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
-#
 # ########################################/
 # # Mail                                                                        #
 # ########################################/
@@ -1210,4 +1311,4 @@ command_config = {
     for section_name, commands in raw_command_config.items()
 }
 
-print(command_config)
+# print(command_config)

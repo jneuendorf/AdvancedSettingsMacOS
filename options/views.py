@@ -1,11 +1,12 @@
 from os import path
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from .command_config import command_config
+from .command import Command
 
 
 PASSWORD_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), 'password.py')
@@ -46,7 +47,7 @@ def delete_password(request, *args, **kwargs):
         return HttpResponse('false')
 
 
-# TODO: sudo, killall
+# TODO: killall
 @csrf_exempt
 def api(request, *args, **kwargs):
     data = json.loads(request.body)
@@ -67,11 +68,16 @@ def api(request, *args, **kwargs):
             password_command = f'password="{password}"'
         # Ask for password.
         else:
+            # see https://apple.stackexchange.com/a/23514
             password_command = 'password="$(osascript -e \'Tell application "System Events" to display dialog "Password:" default answer "" with hidden answer\' -e \'text returned of result\' 2>/dev/null)" &&'
         command_template = f'{password_command} echo "$password" | sudo -S {command_template}'
-        # command_template = f"echo '{data['password']}' | sudo -S {command_template}"
 
     print('would run:')
-    print(command_template.format(input))
+    command = command_template.format(input)
+    print(command)
     # TODO: output
-    return HttpResponse('[]')
+    status, message = Command.run(command)
+    return JsonResponse({
+        'status': status,
+        'message': message,
+    })
