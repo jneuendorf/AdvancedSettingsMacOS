@@ -55,29 +55,33 @@ def api(request, *args, **kwargs):
     command_id = data['command_id']
     input = data['input']
 
-    command_data = command_config[section_name][command_id]
-    command_template = command_data['command']
-    input = command_data['stringify_input'](command_data['parse_input'](input))
+    section_data = command_config[section_name]
 
-    if command_data.get('sudo', False):
-        #########################################################
-        from .password import password
+    meta_data = {
+        'run_before': None,
+        'run_after': None,
+        **section_data.get('_meta', {})
+    }
 
-        # Try to use password from password file.
-        if password is not None:
-            password_command = f'password="{password}"'
-        # Ask for password.
-        else:
-            # see https://apple.stackexchange.com/a/23514
-            password_command = 'password="$(osascript -e \'Tell application "System Events" to display dialog "Password:" default answer "" with hidden answer\' -e \'text returned of result\' 2>/dev/null)" &&'
-        command_template = f'{password_command} echo "$password" | sudo -S {command_template}'
+    status = 0
+    messages = []
 
-    print('would run:')
-    command = command_template.format(input)
-    print(command)
-    # TODO: output
-    status, message = Command.run(command)
+    if meta_data['run_before']:
+        before_status, before_message = Command.run_meta(meta_data['run_before'])
+        status = max(status, before_status)
+        messages.append(before_message)
+
+    command_data = section_data[command_id]
+    command_status, command_message = Command.run(command_data, input)
+    status = max(status, command_status)
+    messages.append(command_message)
+
+    if meta_data['run_after']:
+        after_status, after_message = Command.run_meta(meta_data['run_after'])
+        status = max(status, after_status)
+        messages.append(after_message)
+
     return JsonResponse({
         'status': status,
-        'message': message,
+        'message': '. '.join(messages),
     })
