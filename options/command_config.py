@@ -1,4 +1,5 @@
 from uuid import uuid4 as uuid
+from textwrap import dedent
 
 
 # # Close any open System Preferences panes, to prevent them from overriding
@@ -971,78 +972,34 @@ raw_command_config = {
             },
         },
 
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-        # # Only use UTF-8 in Terminal.app
-        # defaults write com.apple.terminal StringEncodings -array 4
-        #
-        # # Use a modified version of the Solarized Dark theme by default in Terminal.app
-        # osascript <<EOD
-        #
-        # tell application "Terminal"
-        #
-        # 	local allOpenedWindows
-        # 	local initialOpenedWindows
-        # 	local windowID
-        # 	set themeName to "Solarized Dark xterm-256color"
-        #
-        # 	(* Store the IDs of all the open terminal windows. *)
-        # 	set initialOpenedWindows to id of every window
-        #
-        # 	(* Open the custom theme so that it gets added to the list
-        # 	   of available terminal themes (note: this will open two
-        # 	   additional terminal windows). *)
-        # 	do shell script "open '$HOME/init/" & themeName & ".terminal'"
-        #
-        # 	(* Wait a little bit to ensure that the custom theme is added. *)
-        # 	delay 1
-        #
-        # 	(* Set the custom theme as the default terminal theme. *)
-        # 	set default settings to settings set themeName
-        #
-        # 	(* Get the IDs of all the currently opened terminal windows. *)
-        # 	set allOpenedWindows to id of every window
-        #
-        # 	repeat with windowID in allOpenedWindows
-        #
-        # 		(* Close the additional windows that were opened in order
-        # 		   to add the custom theme to the list of terminal themes. *)
-        # 		if initialOpenedWindows does not contain windowID then
-        # 			close (every window whose id is windowID)
-        #
-        # 		(* Change the theme for the initial opened terminal windows
-        # 		   to remove the need to close them in order for the custom
-        # 		   theme to be applied. *)
-        # 		else
-        # 			set current settings of tabs of (every window whose id is windowID) to settings set themeName
-        # 		end if
-        #
-        # 	end repeat
-        #
-        # end tell
-        #
-        # EOD
-        #
-        # # Enable “focus follows mouse” for Terminal.app and all X11 apps
-        # # i.e. hover over a window and start typing in it without clicking first
-        # #defaults write com.apple.terminal FocusFollowsMouse -bool true
-        # #defaults write org.x.X11 wm_ffm -bool true
-        #
-        # # Enable Secure Keyboard Entry in Terminal.app
-        # # See: https:#security.stackexchange.com/a/47786/8918
-        # defaults write com.apple.terminal SecureKeyboardEntry -bool true
-        #
-        # # Disable the annoying line marks
-        # defaults write com.apple.Terminal ShowLineMarks -int 0
-        #
-        # # Install the Solarized Dark theme for iTerm
-        # open "${HOME}/init/Solarized Dark.itermcolors"
-        #
-        # # Don’t display the annoying prompt when quitting iTerm
-        # defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+        'StringEncodings': {
+            'label': 'Only use UTF-8.',
+            'command': 'defaults write com.apple.terminal StringEncodings -array 4',
+            'type': 'none',
+        },
+        'FocusFollowsMouse': {
+            'label': 'Enable “focus follows mouse” for Terminal.app and all X11 apps, i.e. hover over a window and start typing in it without clicking first.',
+            'command': (
+                'defaults write com.apple.terminal FocusFollowsMouse -bool {0} && '
+                'defaults write org.x.X11 wm_ffm -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'SecureKeyboardEntry': {
+            'label': 'Enable Secure Keyboard Entry. See: <a hef="https://security.stackexchange.com/a/47786/8918">https://security.stackexchange.com/a/47786/8918</a>.',
+            'command': 'defaults write com.apple.terminal SecureKeyboardEntry -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowLineMarks': {
+            'label': 'Disable the annoying line marks.',
+            'command': 'defaults write com.apple.Terminal ShowLineMarks -int 0',
+            'type': 'none',
+        },
+        'PromptOnQuit': {
+            'label': 'Don’t display the annoying prompt when quitting iTerm',
+            'command': 'defaults write com.googlecode.iterm2 PromptOnQuit -bool {0}',
+            'type': 'boolean',
+        },
     },
     'Time Machine': {
         'DoNotOfferNewDisksForBackup': {
@@ -1063,23 +1020,31 @@ raw_command_config = {
             },
         },
 
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-        # # Show the main window when launching Activity Monitor
-        # defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
-        #
-        # # Visualize CPU usage in the Activity Monitor Dock icon
-        # defaults write com.apple.ActivityMonitor IconType -int 5
-        #
-        # # Show all processes in Activity Monitor
-        # defaults write com.apple.ActivityMonitor ShowCategory -int 0
-        #
-        # # Sort Activity Monitor results by CPU usage
-        # defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
-        # defaults write com.apple.ActivityMonitor SortDirection -int 0
+        'OpenMainWindow': {
+            'label': 'Show the main window when launching Activity Monitor.',
+            'command': 'defaults write com.apple.ActivityMonitor OpenMainWindow -bool {0}',
+            'type': 'boolean',
+        },
+        # TODO: what choices exist?
+        'IconType': {
+            'label': 'Visualize CPU usage in the Activity Monitor Dock icon.',
+            'command': 'defaults write com.apple.ActivityMonitor IconType -int 5',
+            'type': 'none',
+        },
+        # TODO: what choices exist?
+        'ShowCategory': {
+            'label': 'Show all processes in Activity Monitor.',
+            'command': 'defaults write com.apple.ActivityMonitor ShowCategory -int 0',
+            'type': 'none',
+        },
+        'SortColumnCpuUsage': {
+            'label': 'Sort Activity Monitor results by CPU usage.',
+            'command': (
+                'defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage" && '
+                'defaults write com.apple.ActivityMonitor SortDirection -int 0'
+            ),
+            'type': 'none',
+        },
     },
     'Address Book, Dashboard, iCal, TextEdit, and Disk Utility': {
         '_meta': {
@@ -1088,32 +1053,47 @@ raw_command_config = {
             },
         },
 
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-        # # Enable the debug menu in Address Book
-        # defaults write com.apple.addressbook ABShowDebugMenu -bool true
-        #
-        # # Enable Dashboard dev mode (allows keeping widgets on the desktop)
-        # defaults write com.apple.dashboard devmode -bool true
-        #
-        # # Enable the debug menu in iCal (pre-10.8)
-        # defaults write com.apple.iCal IncludeDebugMenu -bool true
-        #
-        # # Use plain text mode for new TextEdit documents
-        # defaults write com.apple.TextEdit RichText -int 0
-        # # Open and save files as UTF-8 in TextEdit
-        # defaults write com.apple.TextEdit PlainTextEncoding -int 4
-        # defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
-        #
-        # # Enable the debug menu in Disk Utility
-        # defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
-        # defaults write com.apple.DiskUtility advanced-image-options -bool true
-        #
-        # # Auto-play videos when opened with QuickTime Player
-        # defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
+        'ABShowDebugMenu': {
+            'label': 'Enable the debug menu in Address Book.',
+            'command': 'defaults write com.apple.addressbook ABShowDebugMenu -bool {0}',
+            'type': 'boolean',
+        },
+        'devmode': {
+            'label': 'Enable Dashboard dev mode (allows keeping widgets on the desktop).',
+            'command': 'defaults write com.apple.dashboard devmode -bool {0}',
+            'type': 'boolean',
+        },
+        'IncludeDebugMenu': {
+            'label': 'Enable the debug menu in iCal (pre-10.8).',
+            'command': 'defaults write com.apple.iCal IncludeDebugMenu -bool {0}',
+            'type': 'boolean',
+        },
+        'RichText': {
+            'label': 'Use plain text mode for new TextEdit documents.',
+            'command': 'defaults write com.apple.TextEdit RichText -int 0',
+            'type': 'none',
+        },
+        'PlainTextEncoding': {
+            'label': 'Open and save files as UTF-8 in TextEdit.',
+            'command': (
+                'defaults write com.apple.TextEdit PlainTextEncoding -int 4 && '
+                'defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4'
+            ),
+            'type': 'none',
+        },
+        'DUDebugMenuEnabled': {
+            'label': 'Enable the debug menu in Disk Utility.',
+            'command': (
+                'efaults write com.apple.DiskUtility DUDebugMenuEnabled -bool {0} && '
+                'defaults write com.apple.DiskUtility advanced-image-options -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'MGPlayMovieOnOpen': {
+            'label': 'Auto-play videos when opened with QuickTime Player.',
+            'command': 'defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool {0}',
+            'type': 'boolean',
+        },
     },
     'Mac App Store': {
         # '': {
@@ -1168,19 +1148,21 @@ raw_command_config = {
             },
         },
 
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-        # # Disable automatic emoji substitution (i.e. use plain text smileys)
-        # defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
-        #
-        # # Disable smart quotes as it’s annoying for messages that contain code
-        # defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
-        #
-        # # Disable continuous spell checking
-        # defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
+        'automaticEmojiSubstitutionEnablediMessage': {
+            'label': 'Disable automatic emoji substitution (i.e. use plain text smileys).',
+            'command': 'defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool {0}',
+            'type': 'boolean',
+        },
+        'automaticQuoteSubstitutionEnabled': {
+            'label': 'Disable smart quotes as it’s annoying for messages that contain code.',
+            'command': 'defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool {0}',
+            'type': 'boolean',
+        },
+        'continuousSpellCheckingEnabled': {
+            'label': 'Disable continuous spell checking.',
+            'command': 'defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool {0}',
+            'type': 'boolean',
+        },
     },
     'Google Chrome & Google Chrome Canary': {
         '_meta': {
@@ -1189,26 +1171,38 @@ raw_command_config = {
             },
         },
 
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-        # # Disable the all too sensitive backswipe on trackpads
-        # defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
-        # defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
-        #
-        # # Disable the all too sensitive backswipe on Magic Mouse
-        # defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
-        # defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
-        #
-        # # Use the system-native print preview dialog
-        # defaults write com.google.Chrome DisablePrintPreview -bool true
-        # defaults write com.google.Chrome.canary DisablePrintPreview -bool true
-        #
-        # # Expand the print dialog by default
-        # defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
-        # defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
+        'AppleEnableSwipeNavigateWithScrolls': {
+            'label': 'Disable the all too sensitive backswipe on trackpads.',
+            'command': (
+                'defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool {0} && '
+                'defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'AppleEnableMouseSwipeNavigateWithScrolls': {
+            'label': 'Disable the all too sensitive backswipe on Magic Mouse.',
+            'command': (
+                'defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool {0} && '
+                'defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'DisablePrintPreview': {
+            'label': 'Use the system-native print preview dialog.',
+            'command': (
+                'defaults write com.google.Chrome DisablePrintPreview -bool {0} && '
+                'defaults write com.google.Chrome.canary DisablePrintPreview -bool {0}'
+            ),
+            'type': 'boolean',
+        },
+        'PMPrintingExpandedStateForPrint2': {
+            'label': 'Expand the print dialog by default.',
+            'command': (
+                'defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true && '
+                'defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true'
+            ),
+            'type': 'boolean',
+        },
     },
     'GPGMail 2': {
         'SignNewEmailsByDefault': {
