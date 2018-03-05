@@ -76,7 +76,7 @@ def render_widgets(section_name, command_id, data):
             '</div>'
         )
     elif t == 'select':
-        choices = ''.join(f'<option value="{value}">{label}</option>' for value, label in data['choices'])
+        choices = ''.join(f'<option value="{value}" {"selected" if state == value else ""}>{label}</option>' for value, label in data['choices'])
         input_widget = f'<div class="select" {attrs_str} data-value-source><select>{choices}</select></div>'
 
     result = f'{input_widget} '
@@ -1328,9 +1328,19 @@ def with_state(data):
         try:
             successful, response = Command.run_state(command, data)
             state = successful == True and response.strip() == '1'
-        except Exception as e:
+        except ValueError as e:
             state = False
-        print('boolean state:', state)
+    elif type == 'select':
+        command = (
+            data['command']
+            .replace('defaults write ', 'defaults read ')
+        )
+        try:
+            successful, response = Command.run_state(command, data)
+            if successful:
+                state = response.strip()
+        except ValueError as e:
+            pass
 
     if state is not None:
         return {
