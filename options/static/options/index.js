@@ -1,5 +1,11 @@
 import commandConfig from './commands.js'
 
+
+$('.commands').css({
+    minHeight: `${$("aside").height()}px`,
+    maxHeight: `${window.innerHeight - 2*48}px`,
+})
+
 $('.store-password').click(event => {
     const password = prompt('Tell me your password!')
     if (password != null) {
