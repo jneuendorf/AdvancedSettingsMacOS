@@ -1,6 +1,8 @@
 from uuid import uuid4 as uuid
 from textwrap import dedent
 
+from .command import Command
+
 
 # # Close any open System Preferences panes, to prevent them from overriding
 # # settings we’re about to change
@@ -45,6 +47,7 @@ default_attrs_by_type = {
 
 def render_widgets(section_name, command_id, data):
     t = data['type']
+    state = data.get('state', None)
     attrs = {
         **default_attrs_by_type.get(t, {}),
         **data.get('widget_attrs', {})
@@ -68,7 +71,7 @@ def render_widgets(section_name, command_id, data):
         uid = uuid()
         input_widget = (
             f'<div style="position: relative; top: 13px;">'
-                f'<input id="switch_{uid}" type="checkbox" class="switch is-rounded is-outlined is-link is-large send-command" {metadata} data-value-source>'
+                f'<input id="switch_{uid}" type="checkbox" class="switch is-rounded is-outlined is-link is-large send-command" {metadata} data-value-source {"checked" if state == True else ""}>'
                 f'<label for="switch_{uid}"></label>'
             '</div>'
         )
@@ -1103,7 +1106,7 @@ raw_command_config = {
         },
         'ShowDebugMenu': {
             'label': 'Enable Debug Menu in the Mac App Store.',
-            'command': ' defaults write com.apple.appstore ShowDebugMenu -bool {0}',
+            'command': 'defaults write com.apple.appstore ShowDebugMenu -bool {0}',
             'type': 'boolean',
         },
         'AutomaticCheckEnabled': {
@@ -1309,17 +1312,50 @@ raw_command_config = {
 # killall mds > /dev/null 2>&1
 
 
+def with_state(data):
+    if 'state' in data:
+        return data
+
+    state = None
+    type = data['type']
+    if type == 'boolean':
+        # defaults read com.apple.dock mouse-over-hilite-stack
+        command = (
+            data['command']
+            .replace('defaults write ', 'defaults read ')
+            .replace(' -bool {0}', '')
+        )
+        try:
+            successful, response = Command.run_state(command, data)
+            state = successful == True and response.strip() == '1'
+        except Exception as e:
+            state = False
+        print('boolean state:', state)
+
+    if state is not None:
+        return {
+            **data,
+            'state': state,
+        }
+    else:
+        return data
+
 command_config = {
     section_name: {
         command_id: (
             {
-                'widgets': render_widgets(section_name, command_id, data),
+                'widgets': render_widgets(section_name, command_id, with_state(data)),
                 'parse_input': create_input_parser(data['type']),
                 'stringify_input': create_input_stringifier(data['type']),
-                **data
+                **data,
             } if command_id != '_meta' else data
         )
         for command_id, data in commands.items()
     }
     for section_name, commands in raw_command_config.items()
 }
+
+
+# import pprint
+# pp = pprint.PrettyPrinter(indent=2)
+# pp.pprint(command_config)
