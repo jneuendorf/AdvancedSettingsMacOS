@@ -1096,37 +1096,51 @@ raw_command_config = {
         },
     },
     'Mac App Store': {
-        # '': {
-        #     'label': '',
-        #     'command': '',
-        #     'type': '',
-        # },
-        # # Enable the WebKit Developer Tools in the Mac App Store
-        # defaults write com.apple.appstore WebKitDeveloperExtras -bool true
-        #
-        # # Enable Debug Menu in the Mac App Store
-        # defaults write com.apple.appstore ShowDebugMenu -bool true
-        #
-        # # Enable the automatic update check
-        # defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
-        #
-        # # Check for software updates daily, not just once per week
-        # defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
-        #
-        # # Download newly available updates in background
-        # defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
-        #
-        # # Install System data files & security updates
-        # defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
-        #
-        # # Automatically download apps purchased on other Macs
-        # defaults write com.apple.SoftwareUpdate ConfigDataInstall -int 1
-        #
-        # # Turn on app auto-update
-        # defaults write com.apple.commerce AutoUpdate -bool true
-        #
-        # # Allow the App Store to reboot machine on macOS updates
-        # defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
+        'WebKitDeveloperExtras': {
+            'label': 'Enable the WebKit Developer Tools in the Mac App Store.',
+            'command': 'defaults write com.apple.appstore WebKitDeveloperExtras -bool {0}',
+            'type': 'boolean',
+        },
+        'ShowDebugMenu': {
+            'label': 'Enable Debug Menu in the Mac App Store.',
+            'command': ' defaults write com.apple.appstore ShowDebugMenu -bool {0}',
+            'type': 'boolean',
+        },
+        'AutomaticCheckEnabled': {
+            'label': 'Enable the automatic update check.',
+            'command': 'defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool {0}',
+            'type': 'boolean',
+        },
+        'ScheduleFrequency': {
+            'label': 'Check for software updates daily, not just once per week.',
+            'command': 'defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1',
+            'type': 'none',
+        },
+        'AutomaticDownload': {
+            'label': 'Download newly available updates in background.',
+            'command': 'defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1',
+            'type': 'none',
+        },
+        'CriticalUpdateInstall': {
+            'label': 'Install System data files & security updates.',
+            'command': 'defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1',
+            'type': 'none',
+        },
+        'ConfigDataInstall': {
+            'label': 'Automatically download apps purchased on other Macs.',
+            'command': 'defaults write com.apple.SoftwareUpdate ConfigDataInstall -int 1',
+            'type': 'none',
+        },
+        'AutoUpdate': {
+            'label': 'Turn on app auto-update.',
+            'command': 'defaults write com.apple.commerce AutoUpdate -bool {0}',
+            'type': 'boolean',
+        },
+        'AutoUpdateRestartRequired': {
+            'label': 'Allow the App Store to reboot machine on macOS updates.',
+            'command': 'defaults write com.apple.commerce AutoUpdateRestartRequired -bool {0}',
+            'type': 'boolean',
+        },
     },
     'Photos': {
         '_meta': {
@@ -1224,18 +1238,42 @@ raw_command_config = {
             'type': 'boolean',
         },
     },
+    'Spotlight': {
+        'hide': {
+            'label': 'Hide Spotlight tray-icon (and subsequent helper).',
+            'command': 'chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search',
+            'type': 'none',
+            'sudo': True,
+        },
+        'Exclusions': {
+            'label': (
+                'Disable Spotlight indexing for any volume that gets mounted and has not yet been indexed before. '
+                'Use <code>sudo mdutil -i off "/Volumes/foo"</code> to stop indexing any volume.'
+            ),
+            'command': 'defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"',
+            'type': 'none',
+            'sudo': True,
+        },
+        'indexingMainVolume': {
+            'label': 'Make sure indexing is enabled for the main volume.',
+            'command': 'mdutil -i on / > /dev/null',
+            'type': 'none',
+            'sudo': True,
+        },
+        'rebuildIndex': {
+            'label': 'Rebuild the index from scratch.',
+            'command': 'mdutil -E / > /dev/null',
+            'type': 'none',
+            'sudo': True,
+        },
+        # '': {
+        #     'label': '.',
+        #     'command': '',
+        #     'type': '',
+        # },
+    },
 }
 
-# ########################################/
-# # Spotlight                                                                   #
-# ########################################/
-#
-# # Hide Spotlight tray-icon (and subsequent helper)
-# #sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
-# # Disable Spotlight indexing for any volume that gets mounted and has not yet
-# # been indexed before.
-# # Use `sudo mdutil -i off "/Volumes/foo"` to stop indexing any volume.
-# sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
 # # Change indexing order and disable some search results
 # # Yosemite-specific search results (remove them if you are using macOS 10.9 or older):
 # # 	MENU_DEFINITION
@@ -1269,10 +1307,6 @@ raw_command_config = {
 # 	'{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 # # Load new settings before rebuilding the index
 # killall mds > /dev/null 2>&1
-# # Make sure indexing is enabled for the main volume
-# sudo mdutil -i on / > /dev/null
-# # Rebuild the index from scratch
-# sudo mdutil -E / > /dev/null
 
 
 command_config = {

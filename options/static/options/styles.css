@@ -3,3 +3,8 @@
     height: 18px;
     width: 18px;
 }
+
+.panel-block.sudo {
+    background-color: hsl(0, 0%, 98%);
+    /* border-color: hsl(0, 0%, 70%); */
+}
