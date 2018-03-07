@@ -1,6 +1,3 @@
-import commandConfig from './commands.js'
-
-
 $('.commands').css({
     minHeight: `${$("aside").height()}px`,
     maxHeight: `${window.innerHeight - 2*48}px`,
