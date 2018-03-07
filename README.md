@@ -28,7 +28,7 @@ pip install -r ./requirements.txt
 ./manage.py runserver
 ```
 
-and wait for 
+and wait for
 
 ```
 Starting development server at http://127.0.0.1:8000/
@@ -61,3 +61,9 @@ pip install -r ./requirements.txt
 ```
 
 The URL must be opened manually since the server process is running endlessly.
+
+
+## References / thanks
+
+- [Mathias Bynens](https://mathiasbynens.be/) and his [dotfiles](https://github.com/mathiasbynens/dotfiles) repository - especially the [`.macos` file](https://github.com/mathiasbynens/dotfiles/blob/master/.macos).
+- [Kevin Suttle](http://kevinsuttle.com/) and his [macOS-Defaults project](https://github.com/kevinSuttle/macOS-Defaults) repository for providing a documentation for the commands' interface and meaning used in this project (see [here](https://github.com/kevinSuttle/macOS-Defaults/blob/master/REFERENCE.md)).
