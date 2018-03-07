@@ -1088,7 +1088,7 @@ raw_command_config = {
         'DUDebugMenuEnabled': {
             'label': 'Enable the debug menu in Disk Utility.',
             'command': (
-                'efaults write com.apple.DiskUtility DUDebugMenuEnabled -bool {0} && '
+                'defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool {0} && '
                 'defaults write com.apple.DiskUtility advanced-image-options -bool {0}'
             ),
             'type': 'boolean',
