@@ -67,3 +67,4 @@ The URL must be opened manually since the server process is running endlessly.
 
 - [Mathias Bynens](https://mathiasbynens.be/) and his [dotfiles](https://github.com/mathiasbynens/dotfiles) repository - especially the [`.macos` file](https://github.com/mathiasbynens/dotfiles/blob/master/.macos).
 - [Kevin Suttle](http://kevinsuttle.com/) and his [macOS-Defaults project](https://github.com/kevinSuttle/macOS-Defaults) repository for providing a documentation for the commands' interface and meaning used in this project (see [here](https://github.com/kevinSuttle/macOS-Defaults/blob/master/REFERENCE.md)).
+- Wikiki for his great work with [bulma-extensions](https://github.com/wikiki/bulma-extensions).
