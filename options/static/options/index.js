@@ -31,6 +31,12 @@ $('.delete-password').click(event => {
     })
 })
 
+$('.code-toggle').click(event => {
+    const button = $(event.currentTarget)
+    const target = button.parent().children('.panel-block.code')
+    target.slideToggle()
+})
+
 
 $('.send-command').click(event => {
     const button = $(event.target)
@@ -88,4 +94,6 @@ $('.send-command').click(event => {
         button.removeClass('is-loading').addClass('is-danger')
         value_source.addClass('is-danger')
     })
+
+    return false
 })

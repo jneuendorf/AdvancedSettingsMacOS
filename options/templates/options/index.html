@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static filters %}<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -57,20 +57,30 @@
                                 </p>
                                 {% for command_id, command_data in data.items %}
                                     {% if command_id != '_meta' %}
-                                        <div class="panel-block columns {% if command_data.sudo %}sudo{% endif %}">
-                                            {% if command_data.sudo %}
-                                                <div class="column is-narrow">
-                                                    <svg class="octicon octicon-lock" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M4 13H3v-1h1v1zm8-6v7c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h1V4c0-2.2 1.8-4 4-4s4 1.8 4 4v2h1c.55 0 1 .45 1 1zM3.8 6h4.41V4c0-1.22-.98-2.2-2.2-2.2-1.22 0-2.2.98-2.2 2.2v2H3.8zM11 7H2v7h9V7zM4 8H3v1h1V8zm0 2H3v1h1v-1z"></path>
-                                                    </svg>
+                                        <div style="position: relative;">
+                                            <div class="panel-block columns {% if command_data.sudo %}sudo{% endif %}">
+                                                {% if command_data.sudo %}
+                                                    <div class="column is-narrow">
+                                                        <svg class="octicon octicon-lock" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
+                                                            <path fill-rule="evenodd" d="M4 13H3v-1h1v1zm8-6v7c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h1V4c0-2.2 1.8-4 4-4s4 1.8 4 4v2h1c.55 0 1 .45 1 1zM3.8 6h4.41V4c0-1.22-.98-2.2-2.2-2.2-1.22 0-2.2.98-2.2 2.2v2H3.8zM11 7H2v7h9V7zM4 8H3v1h1V8zm0 2H3v1h1v-1z"></path>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="column">
+                                                    {{ command_data.label|safe }}
                                                 </div>
-                                            {% endif %}
-                                            <div class="column">
-                                                {{ command_data.label|safe }}
+                                                <div class="column {% if command_data.widgets_width %}{{ command_data.widgets_width }}{% else %}is-one-quarter{% endif %}" style="text-align: right;">
+                                                    {{ command_data.widgets|safe }}
+                                                    <span class="error-message has-text-weight-light has-text-danger is-size-7"></span>
+                                                </div>
                                             </div>
-                                            <div class="column {% if command_data.widgets_width %}{{ command_data.widgets_width }}{% else %}is-one-quarter{% endif %}" style="text-align: right;">
-                                                {{ command_data.widgets|safe }}
-                                                <span class="error-message has-text-weight-light has-text-danger is-size-7"></span>
+                                            <div class="panel-block code {% if command_data.sudo %}sudo{% endif %}" style="display: none;">
+                                                <code>{{ command_data.command|replace:"{0},$INPUT" }}</code>
+                                            </div>
+                                            <div class="code-toggle" title="Show / hide command">
+                                                <svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"></path>
+                                                </svg>
                                             </div>
                                         </div>
                                     {% endif %}

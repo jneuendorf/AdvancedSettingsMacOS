@@ -16,5 +16,15 @@
 
 .panel-block.sudo {
     background-color: hsl(0, 0%, 98%);
-    /* border-color: hsl(0, 0%, 70%); */
+}
+
+.panel-block.code {
+    padding-bottom: 24px;
+}
+
+.code-toggle {
+    bottom: 4px;
+    cursor: pointer;
+    left: calc(50% - 10px);
+    position: absolute;
 }

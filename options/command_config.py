@@ -66,7 +66,8 @@ def render_widgets(section_name, command_id, data):
     metadata = f'data-section-name="{section_name}" data-command-id="{command_id}"'
 
     if t in text_based_types:
-        input_widget = f'<input class="input" type="{t}" {attrs_str} data-value-source>'
+        value = f'value="{state}"' if state is not None else ''
+        input_widget = f'<input class="input" type="{t}" {attrs_str} data-value-source {value}>'
     elif t == 'boolean':
         uid = uuid()
         input_widget = (
@@ -1313,42 +1314,49 @@ raw_command_config = {
 
 
 def with_state(data):
+    '''Returns a new dict containing data AND a 'state' key.
+    The state is derived by guessing what command is most likely used for writing
+    and transforming that command to a read command.'''
+
     if 'state' in data:
         return data
 
-    state = None
-    type = data['type']
-    if type == 'boolean':
-        # defaults read com.apple.dock mouse-over-hilite-stack
-        command = (
-            data['command']
-            .replace('defaults write ', 'defaults read ')
-            .replace(' -bool {0}', '')
-        )
+
+    read_command = None
+    if 'get_state' in data:
+        read_command = data['get_state']
+    # Automatic retrieval.
+    else:
+        write_command = data['command']
+        if 'defaults write ' in write_command:
+            read_command = write_command.replace('defaults write ', 'defaults read ')
+
+    if read_command is not None:
         try:
-            successful, response = Command.run_state(command, data)
-            state = successful == True and response.strip() == '1'
+            successful, response = Command.run_state(read_command, data)
         except ValueError as e:
-            state = False
-    elif type == 'select':
-        command = (
-            data['command']
-            .replace('defaults write ', 'defaults read ')
-        )
-        try:
-            successful, response = Command.run_state(command, data)
+            successful = False
+            response = None
+            print(str(e))
+
+        state = None
+        type = data['type']
+        if type == 'boolean':
+            state = successful == True and response.strip() == '1'
+        elif type in ('select', 'text') :
             if successful:
                 state = response.strip()
-        except ValueError as e:
-            pass
+        elif type == 'number':
+            if successful:
+                state = float(response.strip())
 
-    if state is not None:
-        return {
-            **data,
-            'state': state,
-        }
-    else:
-        return data
+        if state is not None:
+            return {
+                **data,
+                'state': state,
+            }
+
+    return data
 
 command_config = {
     section_name: {

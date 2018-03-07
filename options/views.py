@@ -9,17 +9,13 @@ from .command_config import command_config
 from .command import Command
 
 
-PASSWORD_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), 'password.py')
+PASSWORD_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), 'password.txt')
 
 
 def index(request):
-    return render(
-        request,
-        'options/index.html',
-        {
-            'command_config': command_config,
-        },
-    )
+    return render(request, 'options/index.html', {
+        'command_config': command_config,
+    })
 
 
 @csrf_exempt
@@ -27,7 +23,7 @@ def store_password(request, *args, **kwargs):
     password = request.body.decode(encoding='UTF-8')
     try:
         with open(PASSWORD_FILE_PATH, "w") as password_file:
-            password_file.write(f"password = '{password}'")
+            password_file.write(password)
         return HttpResponse('true')
     except IOError as e:
         print('ERROR')
@@ -39,7 +35,7 @@ def store_password(request, *args, **kwargs):
 def delete_password(request, *args, **kwargs):
     try:
         with open(PASSWORD_FILE_PATH, "w") as password_file:
-            password_file.write('password = None')
+            password_file.write('__none__')
         return HttpResponse('true')
     except IOError as e:
         print('ERROR')

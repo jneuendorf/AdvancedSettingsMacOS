@@ -1,4 +1,8 @@
+from os import path
 import subprocess
+
+
+PASSWORD_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), 'password.txt')
 
 
 class Command():
@@ -31,7 +35,7 @@ class Command():
     @classmethod
     def _regarding_sudo(self, command_data, command_string, require_file_password=False):
         if command_data.get('sudo', False):
-            return f'{self._get_password_command(require_file_password)} && echo "$password" | sudo -S {command_string}'
+            return f'{self._get_password_command(require_file_password)} | sudo -S {command_string}'
         return command_string
 
     @classmethod
@@ -40,17 +44,18 @@ class Command():
         If the password is set in 'password.py' that password is preferred.
         Otherwise the user is prompted for a password.'''
 
-        from .password import password
+        with open(PASSWORD_FILE_PATH, "r") as password_file:
+            password = password_file.readline()
 
-        if require_file_password and password is None:
-            raise ValueError('No password in \'password.py\'.')
+        if require_file_password and password == '__none__':
+            raise ValueError('No password in \'password.txt\'. It must not be \'__none__\'.')
 
         # Try to use password from password file.
-        if password is not None:
-            return f'password="{password}"'
+        if password != '__none__':
+            return f'cat {PASSWORD_FILE_PATH}'
         # else: Ask for password.
         # see https://apple.stackexchange.com/a/23514
-        return 'password="$(osascript -e \'Tell application "System Events" to display dialog "Password:" default answer "" with hidden answer\' -e \'text returned of result\' 2>/dev/null)"'
+        return 'password="$(osascript -e \'Tell application "System Events" to display dialog "Password:" default answer "" with hidden answer\' -e \'text returned of result\' 2>/dev/null)" && echo "$password"'
 
     @classmethod
     def _run_raw(self, command):
@@ -63,6 +68,7 @@ class Command():
             )
             success = True
         except subprocess.CalledProcessError as error:
-            success = error.returncode
+            print(str(error))
+            success = error.returncode == 0
             response = error.output
-        return success, response.decode("utf-8")
+        return (success, response.decode("utf-8"))
