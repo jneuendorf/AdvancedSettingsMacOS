@@ -1,0 +1,97 @@
+{% load static filters %}<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'options/bulma.min.css' %}">
+    <link rel="stylesheet" href="{% static 'options/bulma-switch.min.css' %}">
+    <link rel="stylesheet" href="{% static 'options/bulma-divider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'options/bulma-pageloader.min.css' %}">
+    <link rel="stylesheet" href="{% static 'options/styles.css' %}">
+    <script src="{% static 'options/jquery-3.3.1.min.js' %}"></script>
+    <title>Advanced Settings for macOS</title>
+</head>
+<body>
+    <section class="section">
+        <div class="container is-widescreen">
+            <div class="columns">
+                <div class="column is-one-third nav-container">
+                    <aside class="menu">
+                        <p class="menu-label">
+                            Sections
+                        </p>
+                        <ul class="menu-list">
+                            {% for name, data in command_config.items %}
+                                <li><a href="#{{ name|slugify }}">{{ name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </aside>
+                </div>
+                <div class="column commands" style="overflow: scroll;">
+                    <section class="section">
+                        <div class="columns">
+                            <div class="column">
+                                Here, you can can store or delete your super user password.
+                                It is required for some of the settings and stored in your browser.
+                                If you don't want this you'll have to enter the password each time your change a settings that requires super user permissions.
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column is-one-third">
+                                <button class="button is-primary store-password" type="button">Store sudo password</button>
+                            </div>
+                            <div class="column">
+                                <button class="button is-danger delete-password" type="button">Delete sudo password</button>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="is-divider" data-content="SETTINGS"></div>
+                    {% for name, data in command_config.items %}
+                        <section class="section">
+                            <div class="panel">
+                                <p class="panel-heading">
+                                    <a name="{{ name|slugify }}">{{ name }}</a>
+                                </p>
+                                {% for command_id, command_data in data.items %}
+                                    {% if command_id != '_meta' %}
+                                        <div style="position: relative;">
+                                            <div class="panel-block columns {% if command_data.sudo %}sudo{% endif %}">
+                                                {% if command_data.sudo %}
+                                                    <div class="column is-narrow">
+                                                        <svg class="octicon octicon-lock" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
+                                                            <path fill-rule="evenodd" d="M4 13H3v-1h1v1zm8-6v7c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h1V4c0-2.2 1.8-4 4-4s4 1.8 4 4v2h1c.55 0 1 .45 1 1zM3.8 6h4.41V4c0-1.22-.98-2.2-2.2-2.2-1.22 0-2.2.98-2.2 2.2v2H3.8zM11 7H2v7h9V7zM4 8H3v1h1V8zm0 2H3v1h1v-1z"></path>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="column">
+                                                    {{ command_data.label|safe }}
+                                                </div>
+                                                <div class="column {% if command_data.widgets_width %}{{ command_data.widgets_width }}{% else %}is-one-quarter{% endif %}" style="text-align: right;">
+                                                    {{ command_data.widgets|safe }}
+                                                    <span class="error-message has-text-weight-light has-text-danger is-size-7"></span>
+                                                </div>
+                                            </div>
+                                            <div class="panel-block code {% if command_data.sudo %}sudo{% endif %}" style="display: none;">
+                                                <code>{{ command_data.command|replace:"{0},$INPUT" }}</code>
+                                            </div>
+                                            <div class="code-toggle" title="Show / hide command">
+                                                <svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="{% static 'options/index.js' %}" type="module"></script>
+</body>
+</html>

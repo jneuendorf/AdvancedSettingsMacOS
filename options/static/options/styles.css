@@ -1,0 +1,30 @@
+.column.commands {
+    overflow: scroll;
+}
+
+.panel-block.columns {
+    margin: 0;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+}
+
+.octicon {
+    display: block;
+    height: 18px;
+    width: 18px;
+}
+
+.panel-block.sudo {
+    background-color: hsl(0, 0%, 98%);
+}
+
+.panel-block.code {
+    padding-bottom: 24px;
+}
+
+.code-toggle {
+    bottom: 4px;
+    cursor: pointer;
+    left: calc(50% - 10px);
+    position: absolute;
+}
