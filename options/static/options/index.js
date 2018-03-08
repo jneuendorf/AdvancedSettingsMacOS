@@ -91,6 +91,4 @@ $('.send-command').click(event => {
         button.removeClass('is-loading').addClass('is-danger')
         value_source.addClass('is-danger')
     })
-
-    return false
 })
