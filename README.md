@@ -62,6 +62,8 @@ pip install -r ./requirements.txt
 
 The URL must be opened manually since the server process is running endlessly.
 
+For a complete setup script see `./setup.sh`.
+
 
 ## References / thanks
 
